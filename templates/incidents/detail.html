@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Incident {{ incident.reference_code }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <div class="breadcrumb">
+        <a href="{% url 'incidents:list' %}">Incidents</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ incident.reference_code }}</span>
+      </div>
+      <h1>Incident {{ incident.reference_code }}</h1>
+      <p class="subtitle">Reported on {{ incident.created_at|date:"F j, Y \a\t g:i A" }}</p>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'incidents:edit' incident.reference_code %}" class="btn btn-secondary">Edit</a>
+      <a href="{% url 'reporting:export_pdf' incident.reference_code %}" class="btn btn-primary">Export PDF</a>
+    </div>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Incident Details</h2>
+        <form method="post" action="{% url 'incidents:update_status' incident.reference_code %}" class="inline-form">
+          {% csrf_token %}
+          <select name="status" onchange="this.form.submit()" class="form-select form-select-xs">
+            <option value="draft" {% if incident.status == "draft" %}selected{% endif %}>Draft</option>
+            <option value="submitted" {% if incident.status == "submitted" %}selected{% endif %}>Submitted</option>
+            <option value="under_review" {% if incident.status == "under_review" %}selected{% endif %}>Under Review</option>
+            <option value="resolved" {% if incident.status == "resolved" %}selected{% endif %}>Resolved</option>
+            <option value="closed" {% if incident.status == "closed" %}selected{% endif %}>Closed</option>
+          </select>
+        </form>
+      </div>
+
+      <div class="detail-section">
+        <h3>Platform</h3>
+        <p class="detail-value">{{ incident.get_platform_category_display }}</p>
+        {% if incident.platform_name %}
+        <p class="detail-sub">{{ incident.platform_name }}</p>
+        {% endif %}
+      </div>
+
+      <div class="detail-section">
+        <h3>Date of Occurrence</h3>
+        <p class="detail-value">{{ incident.date_of_occurrence|date:"F j, Y" }}</p>
+      </div>
+
+      <div class="detail-section">
+        <h3>Classification</h3>
+        <p class="detail-value">{{ incident.get_incident_classification_display }}</p>
+      </div>
+
+      <div class="detail-section">
+        <h3>Actor Involvement</h3>
+        <p class="detail-value">{{ incident.get_actor_involvement_display }}</p>
+        {% if incident.actor_description %}
+        <p class="detail-sub">{{ incident.actor_description }}</p>
+        {% endif %}
+      </div>
+
+      <div class="detail-section">
+        <h3>Severity Rating</h3>
+        <p class="detail-value">
+          {% if incident.severity_rating == 1 %}
+          <span class="badge badge-mild">Mild</span>
+          {% elif incident.severity_rating == 2 %}
+          <span class="badge badge-moderate">Moderate</span>
+          {% elif incident.severity_rating == 3 %}
+          <span class="badge badge-severe">Severe</span>
+          {% else %}
+          <span class="badge badge-critical">Critical</span>
+          {% endif %}
+        </p>
+      </div>
+
+      {% if incident.evidence_file %}
+      <div class="detail-section">
+        <h3>Evidence</h3>
+        <p class="detail-value">
+          <a href="{{ incident.evidence_file.url }}" target="_blank" rel="noopener noreferrer" class="link-external">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            View attached file
+          </a>
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Narrative</h2>
+      </div>
+      <div class="narrative-content">{{ incident.narrative }}</div>
+    </div>
+
+    {% if incident.harms.exists %}
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Harm Classification</h2>
+        <span class="badge badge-muted">{{ incident.harms.count }} harm{{ incident.harms.count|pluralize:"s" }}</span>
+      </div>
+      {% for harm in incident.harms.all %}
+      <div class="harm-detail-item {% if not forloop.last %}has-border{% endif %}">
+        <div class="harm-detail-header">
+          <h3>{{ harm.get_harm_category_display }}</h3>
+          {% if harm.severity_score == 1 %}
+          <span class="badge badge-mild">Mild</span>
+          {% elif harm.severity_score == 2 %}
+          <span class="badge badge-moderate">Moderate</span>
+          {% elif harm.severity_score == 3 %}
+          <span class="badge badge-severe">Severe</span>
+          {% else %}
+          <span class="badge badge-critical">Critical</span>
+          {% endif %}
+        </div>
+        <div class="harm-detail-meta">
+          <span>Duration: {{ harm.get_duration_display }}</span>
+        </div>
+        {% if harm.elaboration %}
+        <p class="harm-detail-elab">{{ harm.elaboration }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card card-danger">
+      <div class="card-header">
+        <h2 class="card-title text-danger">Danger Zone</h2>
+      </div>
+      <p class="text-muted-sm">Permanently delete this incident report. This action cannot be undone.</p>
+      <form method="post" action="{% url 'incidents:delete' incident.reference_code %}" data-confirm="Permanently delete this incident? This cannot be undone.">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Incident</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>About Mamoru</h1>
+    <p class="subtitle">Understanding privacy, documenting incidents, finding support.</p>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card section">
+      <h2>Our Mission</h2>
+      <p>
+        Mamoru is a privacy incident reporting system built for Nigerian university students. 
+        We provide a structured, confidential platform to document digital privacy violations, 
+        classify harms using a research-backed taxonomy, and connect with relevant support resources.
+      </p>
+      <p>
+        Privacy violations in digital spaces are underreported, especially within academic communities. 
+        Students may not know their rights, may fear retaliation, or may lack access to appropriate 
+        reporting mechanisms.         Mamoru bridges this gap.
+      </p>
+    </div>
+
+    <div class="card section">
+      <h2>How It Works</h2>
+      <p>
+        <strong>1. Report</strong> &mdash; Use our guided multi-step form to document an incident. 
+        You can report anonymously or with your account.
+      </p>
+      <p>
+        <strong>2. Classify</strong> &mdash; Identify the psychological and tangible harms you experienced 
+        using a taxonomy adapted from academic privacy research.
+      </p>
+      <p>
+        <strong>3. Access Support</strong> &mdash; Browse curated resources for legal rights, 
+        mental health support, digital safety, and campus-specific guidance.
+      </p>
+      <p>
+        <strong>4. Export</strong> &mdash; Generate structured PDF reports with reference codes 
+        for your records, research, or advocacy.
+      </p>
+    </div>
+  </div>
+
+  <div>
+    <div class="card section">
+      <h2>Privacy &amp; Security</h2>
+      <p>
+        Your privacy is our foundation.         Mamoru is designed with the following principles:
+      </p>
+      <p>
+        <strong>Confidentiality</strong> &mdash; Incident data is encrypted in transit and at rest. 
+        Your identity is never shared without explicit consent.
+      </p>
+      <p>
+        <strong>Anonymous reporting</strong> &mdash; You can submit an incident without creating an account. 
+        Anonymous reports are assigned a reference code for your records. You can also request identity 
+        concealment on any report from your settings.
+      </p>
+      <p>
+        <strong>Data minimisation</strong> &mdash; We collect only the information needed to document 
+        and classify privacy harms. You control what you share.
+      </p>
+      <p>
+        <strong>Compliance</strong> &mdash;         Mamoru operates in alignment with the Nigeria Data Protection  
+        Act 2023 and respects the constitutional right to privacy under Section 37 of the 1999 Constitution.
+      </p>
+    </div>
+
+    <div class="card section">
+      <h2>Contact</h2>
+      <p>
+        Mamoru is developed as a research and advocacy tool for digital privacy rights. 
+        For questions, feedback, or support, please reach out through the available resources 
+        or contact your campus privacy advocacy group.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

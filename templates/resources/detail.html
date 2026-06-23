@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ resource.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <div class="breadcrumb">
+        <a href="{% url 'resources:list' %}">Resources</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ resource.title|truncatechars:40 }}</span>
+      </div>
+      <h1>{{ resource.title }}</h1>
+      <p class="subtitle">
+        <span class="badge badge-accent">{{ resource.get_category_display }}</span>
+      </p>
+    </div>
+    <a href="{% url 'resources:list' %}" class="btn btn-secondary no-print">Back to Resources</a>
+  </div>
+</div>
+
+<div class="card" style="max-width:800px;">
+  <div class="narrative-content">{{ resource.description }}</div>
+
+  {% if resource.relevance_tags %}
+  <div style="margin-top:var(--sp-5); padding-top:var(--sp-4); border-top:1px solid var(--border-light);">
+    <strong style="font-size:.85rem; color:var(--text-secondary);">Tags</strong>
+    <div class="resource-tags" style="margin-top:var(--sp-2);">
+      {% for tag in resource.tag_list %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if resource.external_link %}
+  <div style="margin-top:var(--sp-5);">
+    <a href="{{ resource.external_link }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Visit External Resource
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

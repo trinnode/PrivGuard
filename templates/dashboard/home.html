@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p class="subtitle">Overview of your reported incidents and harm patterns.</p>
+</div>
+
+{% if total_incidents == 0 %}
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+  </div>
+  <h3>No incidents yet</h3>
+  <p>You haven't reported any incidents yet. Use Mamoru to document digital privacy violations you've experienced.</p>
+  <a href="{% url 'incidents:create' %}" class="btn btn-primary btn-lg">Report Your First Incident</a>
+</div>
+{% else %}
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-number">{{ total_incidents }}</div>
+    <div class="stat-label">Total Incidents</div>
+  </div>
+  <div class="stat-card stat-psych">
+    <div class="stat-number">{{ psychological_count }}</div>
+    <div class="stat-label">Psychological Harms</div>
+  </div>
+  <div class="stat-card stat-tangible">
+    <div class="stat-number">{{ tangible_count }}</div>
+    <div class="stat-label">Tangible Harms</div>
+  </div>
+  <div class="stat-card stat-severity">
+    <div class="stat-number">{% if recent_incidents.0 %}{{ recent_incidents.0.get_severity_rating_display|truncatechars:10 }}{% else %}-{% endif %}</div>
+    <div class="stat-label">Latest Severity</div>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Recent Incidents</h2>
+        <a href="{% url 'incidents:list' %}" class="btn btn-xs btn-ghost">View All</a>
+      </div>
+      <ul class="incident-list">
+        {% for incident in recent_incidents %}
+        <li class="incident-list-item">
+          <div class="incident-list-main">
+            <div>
+              <a href="{% url 'incidents:detail' incident.reference_code %}" class="incident-list-ref">{{ incident.reference_code }}</a>
+              <span class="incident-list-date">{{ incident.date_of_occurrence|date:"M j" }}</span>
+            </div>
+            <div class="incident-list-class">{{ incident.get_incident_classification_display|truncatechars:50 }}</div>
+          </div>
+          <div class="incident-list-meta">
+            {% if incident.severity_rating == 1 %}
+            <span class="badge badge-mild">Mild</span>
+            {% elif incident.severity_rating == 2 %}
+            <span class="badge badge-moderate">Moderate</span>
+            {% elif incident.severity_rating == 3 %}
+            <span class="badge badge-severe">Severe</span>
+            {% elif incident.severity_rating == 4 %}
+            <span class="badge badge-critical">Critical</span>
+            {% endif %}
+            <a href="{% url 'incidents:detail' incident.reference_code %}" class="btn btn-xs btn-outline">View</a>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if status_distribution %}
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Status Overview</h2>
+      </div>
+      <div class="status-bars">
+        {% for item in status_distribution %}
+        <div class="bar-item">
+          <div class="bar-label">
+            <span>{% if item.status == "submitted" %}Submitted{% elif item.status == "under_review" %}Under Review{% elif item.status == "resolved" %}Resolved{% elif item.status == "closed" %}Closed{% else %}Draft{% endif %}</span>
+            <span class="bar-count">{{ item.count }}</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-fill-info" style="width:{% widthratio item.count total_incidents 100 %}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Harm Distribution</h2>
+      </div>
+      {% if harm_counts %}
+      <div class="harm-bars">
+        {% for label, count in harm_counts.items %}
+        <div class="bar-item">
+          <div class="bar-label">
+            <span>{{ label|truncatechars:35 }}</span>
+            <span class="bar-count">{{ count }}</span>
+          </div>
+          <div class="bar-track">
+            {% widthratio count total_incidents 100 as bar_width %}
+            <div class="bar-fill" style="width:{% if bar_width|floatformat:0 > 100 %}100{% else %}{{ bar_width }}{% endif %}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">No harms have been classified yet.</p>
+      {% endif %}
+    </div>
+
+    {% if platform_distribution %}
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Platform Distribution</h2>
+      </div>
+      <div class="platform-bars">
+        {% for item in platform_distribution %}
+        <div class="bar-item">
+          <div class="bar-label">
+            <span>{{ item.platform_category|title }}</span>
+            <span class="bar-count">{{ item.count }}</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-fill-warm" style="width:{% widthratio item.count total_incidents 100 %}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">Quick Actions</h2>
+  </div>
+  <div class="quick-actions">
+    <a href="{% url 'incidents:create' %}" class="btn btn-primary">Report New Incident</a>
+    <a href="{% url 'resources:list' %}" class="btn btn-secondary">Browse Resources</a>
+    <a href="{% url 'accounts:profile' %}" class="btn btn-ghost">Privacy Settings</a>
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}

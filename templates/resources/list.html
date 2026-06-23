@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Resources{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Support Resources</h1>
+  <p class="subtitle">Guidance, support, and information for digital privacy and wellbeing.</p>
+</div>
+
+<div class="toolbar">
+  <form method="get" class="search-form">
+    <div class="search-input-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" name="q" value="{{ search_query }}" placeholder="Search resources..." class="search-input">
+    </div>
+    {% if active_category %}<input type="hidden" name="category" value="{{ active_category }}">{% endif %}
+    <button type="submit" class="btn btn-sm btn-primary">Search</button>
+    {% if search_query %}
+    <a href="{% url 'resources:list' %}{% if active_category %}?category={{ active_category }}{% endif %}" class="btn btn-sm btn-ghost">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="category-filters">
+  <a href="{% url 'resources:list' %}" class="filter-chip {% if not active_category %}is-active{% endif %}">All</a>
+  {% for value, label in categories %}
+  <a href="{% url 'resources:list' %}?category={{ value }}{% if search_query %}&q={{ search_query }}{% endif %}" class="filter-chip {% if active_category == value %}is-active{% endif %}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+{% if resources %}
+<div class="resource-grid">
+  {% for resource in resources %}
+  <article class="resource-card">
+    <div class="resource-card-top">
+      <span class="badge badge-accent">{{ resource.get_category_display }}</span>
+    </div>
+    <h3>{{ resource.title }}</h3>
+    <p>{{ resource.description|truncatechars:160 }}</p>
+    {% if resource.relevance_tags %}
+    <div class="resource-tags">
+      {% for tag in resource.tag_list|slice:":4" %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="resource-card-actions">
+      {% if resource.external_link %}
+      <a href="{{ resource.external_link }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">Open Resource</a>
+      {% endif %}
+      <a href="{% url 'resources:detail' resource.pk %}" class="btn btn-sm btn-secondary">View Details</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="pagination" aria-label="Resources pagination">
+  {% if page_obj.has_previous %}
+  <a href="?page={{ page_obj.previous_page_number }}{% if active_category %}&category={{ active_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="pagination-btn">&laquo; Previous</a>
+  {% endif %}
+  <span class="pagination-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+  <a href="?page={{ page_obj.next_page_number }}{% if active_category %}&category={{ active_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="pagination-btn">Next &raquo;</a>
+  {% endif %}
+</nav>
+{% endif %}
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+  </div>
+  <h3>No resources found</h3>
+  <p>{% if search_query or active_category %}No resources match your search. Try different keywords or browse all categories.{% else %}Resources will appear here once they are added.{% endif %}</p>
+</div>
+{% endif %}
+{% endblock %}

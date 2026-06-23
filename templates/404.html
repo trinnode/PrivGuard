@@ -1,0 +1,33 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<title>Page Not Found &middot; Mamoru</title>
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+  ._404{text-align:center;padding:2rem;max-width:480px}
+  ._404 .c{font-size:6rem;font-weight:800;font-family:var(--font-heading);color:var(--accent);line-height:1;margin-bottom:1.5rem;letter-spacing:-.06em}
+  ._404 h1{margin:0 0 1rem;font-family:var(--font-heading);font-size:1.75rem}
+  ._404 p{color:var(--text-secondary);margin:0 auto 2rem;font-size:1.05rem;line-height:1.7}
+  ._404 .as{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="_404">
+  <div class="c">404</div>
+  <h1>Page not found</h1>
+  <p>The page you're looking for doesn't exist or has been moved.</p>
+  <div class="as">
+    <a href="{% url 'landing' %}" class="btn btn-primary">Go Home</a>
+    <a href="{% url 'incidents:create' %}" class="btn btn-secondary">Report an Incident</a>
+  </div>
+</div>
+</body>
+</html>

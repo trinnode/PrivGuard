@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Settings</h1>
+  <p class="subtitle">Manage your account, privacy preferences, and data.</p>
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Profile</h2>
+      </div>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.full_name.id_for_label }}" class="form-label">{{ form.full_name.label }}</label>
+          {{ form.full_name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.institution.id_for_label }}" class="form-label">{{ form.institution.label }}</label>
+          {{ form.institution }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Privacy &amp; Anonymization</h2>
+      </div>
+      <p class="text-muted-sm" style="margin-bottom:var(--sp-4);">
+        When enabled, your identity will be concealed in exported versions of your incident reports.
+        This applies to all future exports. You can change this at any time.
+      </p>
+      <form method="post" action="{% url 'accounts:toggle_anonymize' %}">
+        {% csrf_token %}
+        {% if user.anonymize_requested %}
+        <p style="margin-bottom:var(--sp-3);">
+          <span class="badge badge-success">Identity concealment enabled</span>
+        </p>
+        <button type="submit" class="btn btn-secondary">Disable Concealment</button>
+        {% else %}
+        <p style="margin-bottom:var(--sp-3);">
+          <span class="badge badge-muted">Identity concealment disabled</span>
+        </p>
+        <button type="submit" class="btn btn-primary">Enable Concealment</button>
+        {% endif %}
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Research Consent</h2>
+      </div>
+      <p class="text-muted-sm" style="margin-bottom:var(--sp-4);">
+        When enabled, your anonymized incident data may be used for privacy research
+        to improve understanding of digital harms affecting Nigerian university students.
+        Your identity will never be shared. You can change this at any time.
+      </p>
+      <form method="post" action="{% url 'accounts:toggle_consent' %}">
+        {% csrf_token %}
+        {% if user.consent_granted %}
+        <p style="margin-bottom:var(--sp-3);">
+          <span class="badge badge-success">Consent granted</span>
+        </p>
+        <button type="submit" class="btn btn-secondary">Revoke Consent</button>
+        {% else %}
+        <p style="margin-bottom:var(--sp-3);">
+          <span class="badge badge-muted">Consent not granted</span>
+        </p>
+        <button type="submit" class="btn btn-primary">Grant Consent</button>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Account Information</h2>
+      </div>
+      <div class="detail-section">
+        <h3>Email</h3>
+        <p class="detail-value">{{ user.email }}</p>
+      </div>
+      <div class="detail-section">
+        <h3>Role</h3>
+        <p class="detail-value">{{ user.get_role_display }}</p>
+      </div>
+      <div class="detail-section">
+        <h3>Member Since</h3>
+        <p class="detail-value">{{ user.date_joined|date:"F j, Y" }}</p>
+      </div>
+      <div class="detail-section">
+        <h3>Total Incidents</h3>
+        <p class="detail-value">{{ user.incidents.count }}</p>
+      </div>
+    </div>
+
+    <div class="card card-danger">
+      <div class="card-header">
+        <h2 class="card-title text-danger">Danger Zone</h2>
+      </div>
+      <p class="text-muted-sm" style="margin-bottom:var(--sp-4);">
+        Permanently delete your account and all associated incident reports, harm classifications,
+        and uploaded evidence. This action cannot be undone.
+      </p>
+      <form method="post" action="{% url 'accounts:delete_account' %}" data-confirm="Are you sure you want to permanently delete your account? All incident data will be lost.">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="delete-password" class="form-label">Enter your password to confirm</label>
+          <input type="password" name="password" id="delete-password" class="form-input" required autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-danger" data-confirm="This will permanently delete all your data. Continue?">Delete My Account</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

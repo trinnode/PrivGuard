@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load static %}
+{% load incident_tags %}
+
+{% block title %}Report an Incident{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Report an Incident</h1>
+  <p class="subtitle">Document a digital privacy violation. Your information is kept secure and confidential.</p>
+</div>
+
+<div id="support-banner" class="support-banner" role="alert">
+  <strong>You are not alone.</strong> If you are in immediate danger or need someone to talk to,
+  please reach out to a trusted friend, campus counselor, or the Nigerian Suicide Prevention Hotline:
+  <a href="tel:08062106493">0806 210 6493</a>.
+  <a href="{% url 'resources:list' %}?category=mental_health">Browse mental health resources</a>
+</div>
+
+<form method="post" enctype="multipart/form-data" id="incident-form" novalidate>
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+  <div class="alert alert-error">
+    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+  </div>
+  {% endif %}
+
+  <div id="autosave-status" class="autosave-indicator">Draft auto-saved locally</div>
+
+  <div class="wizard-progress" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+    <div class="wizard-steps">
+      <div class="wizard-step is-active" data-step="1">
+        <span class="wizard-step-number">1</span>
+        <span class="wizard-step-label">Incident Info</span>
+      </div>
+      <div class="wizard-step" data-step="2">
+        <span class="wizard-step-number">2</span>
+        <span class="wizard-step-label">Narrative &amp; Harms</span>
+      </div>
+      <div class="wizard-step" data-step="3">
+        <span class="wizard-step-number">3</span>
+        <span class="wizard-step-label">Evidence &amp; Submit</span>
+      </div>
+    </div>
+    <div class="wizard-progress-bar">
+      <div class="wizard-progress-fill" style="width:33%"></div>
+    </div>
+    <div class="wizard-percentage">33% complete</div>
+  </div>
+
+  <div class="wizard-step-content" data-step="1">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Incident Information</h2>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.platform_category.id_for_label }}" class="form-label">{{ form.platform_category.label }}</label>
+          {{ form.platform_category }}
+          {% if form.platform_category.errors %}<div class="form-error">{{ form.platform_category.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.platform_name.id_for_label }}" class="form-label">{{ form.platform_name.label }}</label>
+          {{ form.platform_name }}
+          <span class="form-help">{{ form.platform_name.help_text }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.date_of_occurrence.id_for_label }}" class="form-label">{{ form.date_of_occurrence.label }}</label>
+          {{ form.date_of_occurrence }}
+          {% if form.date_of_occurrence.errors %}<div class="form-error">{{ form.date_of_occurrence.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.severity_rating.id_for_label }}" class="form-label">{{ form.severity_rating.label }}</label>
+          {{ form.severity_rating }}
+          {% if form.severity_rating.errors %}<div class="form-error">{{ form.severity_rating.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.incident_classification.id_for_label }}" class="form-label">{{ form.incident_classification.label }}</label>
+          {{ form.incident_classification }}
+          {% if form.incident_classification.errors %}<div class="form-error">{{ form.incident_classification.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.actor_involvement.id_for_label }}" class="form-label">{{ form.actor_involvement.label }}</label>
+          {{ form.actor_involvement }}
+          {% if form.actor_involvement.errors %}<div class="form-error">{{ form.actor_involvement.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.actor_description.id_for_label }}" class="form-label">{{ form.actor_description.label }}</label>
+        {{ form.actor_description }}
+        <span class="form-help">{{ form.actor_description.help_text }}</span>
+      </div>
+    </div>
+
+    <div class="wizard-nav">
+      <span></span>
+      <button type="button" class="btn btn-primary wizard-next" data-next="2">Next Step</button>
+    </div>
+  </div>
+
+  <div class="wizard-step-content" data-step="2" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Describe What Happened</h2>
+      </div>
+      <div class="form-group">
+        <label for="{{ form.narrative.id_for_label }}" class="form-label">{{ form.narrative.label }}</label>
+        {{ form.narrative }}
+        <span class="form-help">{{ form.narrative.help_text }}</span>
+        {% if form.narrative.errors %}<div class="form-error">{{ form.narrative.errors.0 }}</div>{% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Classify the Harms You Experienced</h2>
+        <span class="text-muted-sm">Select all that apply</span>
+      </div>
+
+      <div id="harm-count" class="autosave-indicator">0 harm categories selected</div>
+
+      <div class="harm-category-group">
+        <h3>Psychological Harms</h3>
+        {% for harm_item in harm_categories %}
+        <div class="harm-option" data-type="psychological">
+          <label>
+            <input type="checkbox" name="harm_sel" value="{{ harm_item.0 }}" data-category="{{ harm_item.0 }}">
+            <span>{{ harm_item.1 }}</span>
+          </label>
+          <div class="harm-details" style="display:none;">
+            <select name="harm_severity_{{ harm_item.0 }}" class="form-select">
+              <option value="">Select severity...</option>
+              <option value="1">Mild</option>
+              <option value="2">Moderate</option>
+              <option value="3">Severe</option>
+              <option value="4">Critical</option>
+            </select>
+            <select name="harm_duration_{{ harm_item.0 }}" class="form-select">
+              <option value="">Select duration...</option>
+              <option value="one_time">One-time occurrence</option>
+              <option value="repeated_short">Repeated over days or weeks</option>
+              <option value="repeated_long">Recurring over months</option>
+              <option value="ongoing">Currently ongoing</option>
+            </select>
+            <textarea name="harm_elaboration_{{ harm_item.0 }}" class="form-textarea" rows="2" placeholder="Optional: add details about this harm..."></textarea>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="harm-category-group">
+        <h3>Tangible Harms</h3>
+        {% for harm_item in tangible_categories %}
+        <div class="harm-option" data-type="tangible">
+          <label>
+            <input type="checkbox" name="harm_sel" value="{{ harm_item.0 }}" data-category="{{ harm_item.0 }}">
+            <span>{{ harm_item.1 }}</span>
+          </label>
+          <div class="harm-details" style="display:none;">
+            <select name="harm_severity_{{ harm_item.0 }}" class="form-select">
+              <option value="">Select severity...</option>
+              <option value="1">Mild</option>
+              <option value="2">Moderate</option>
+              <option value="3">Severe</option>
+              <option value="4">Critical</option>
+            </select>
+            <select name="harm_duration_{{ harm_item.0 }}" class="form-select">
+              <option value="">Select duration...</option>
+              <option value="one_time">One-time occurrence</option>
+              <option value="repeated_short">Repeated over days or weeks</option>
+              <option value="repeated_long">Recurring over months</option>
+              <option value="ongoing">Currently ongoing</option>
+            </select>
+            <textarea name="harm_elaboration_{{ harm_item.0 }}" class="form-textarea" rows="2" placeholder="Optional: add details about this harm..."></textarea>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="wizard-nav">
+      <button type="button" class="btn btn-secondary wizard-back" data-prev="1">Back</button>
+      <button type="button" class="btn btn-primary wizard-next" data-next="3">Next Step</button>
+    </div>
+  </div>
+
+  <div class="wizard-step-content" data-step="3" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Evidence</h2>
+      </div>
+      <div class="form-group">
+        <div class="upload-area">
+          {{ form.evidence_file }}
+          <p class="upload-label">
+            Drop a file here or click to browse. PNG, JPEG, or PDF. Max 5MB.
+          </p>
+        </div>
+        {% if form.evidence_file.errors %}<div class="form-error">{{ form.evidence_file.errors.0 }}</div>{% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-group">
+        <div class="form-checkbox">
+          {{ form.is_anonymous }}
+          <label for="{{ form.is_anonymous.id_for_label }}">
+            <strong>{{ form.is_anonymous.label }}</strong>
+            <br><span class="text-muted-sm">Your identity will not be stored with this report. You will still be able to access it through your account.</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-nav">
+      <button type="button" class="btn btn-secondary wizard-back" data-prev="2">Back</button>
+      <button type="submit" class="btn btn-primary btn-lg">Submit Incident Report</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

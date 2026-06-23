@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% load incident_tags %}
+
+{% block title %}Edit Incident {{ incident.reference_code }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Edit Incident</h1>
+  <p class="subtitle">Editing {{ incident.reference_code }} &mdash; {{ incident.get_incident_classification_display }}</p>
+</div>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+  <div class="alert alert-error">
+    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Incident Information</h2>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="{{ form.platform_category.id_for_label }}" class="form-label">{{ form.platform_category.label }}</label>
+        {{ form.platform_category }}
+        {% if form.platform_category.errors %}<div class="form-error">{{ form.platform_category.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.platform_name.id_for_label }}" class="form-label">{{ form.platform_name.label }}</label>
+        {{ form.platform_name }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.date_of_occurrence.id_for_label }}" class="form-label">{{ form.date_of_occurrence.label }}</label>
+        {{ form.date_of_occurrence }}
+        {% if form.date_of_occurrence.errors %}<div class="form-error">{{ form.date_of_occurrence.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.severity_rating.id_for_label }}" class="form-label">{{ form.severity_rating.label }}</label>
+        {{ form.severity_rating }}
+        {% if form.severity_rating.errors %}<div class="form-error">{{ form.severity_rating.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.incident_classification.id_for_label }}" class="form-label">{{ form.incident_classification.label }}</label>
+        {{ form.incident_classification }}
+        {% if form.incident_classification.errors %}<div class="form-error">{{ form.incident_classification.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.actor_involvement.id_for_label }}" class="form-label">{{ form.actor_involvement.label }}</label>
+        {{ form.actor_involvement }}
+        {% if form.actor_involvement.errors %}<div class="form-error">{{ form.actor_involvement.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.actor_description.id_for_label }}" class="form-label">{{ form.actor_description.label }}</label>
+        {{ form.actor_description }}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Narrative</h2>
+    </div>
+    <div class="form-group">
+      <label for="{{ form.narrative.id_for_label }}" class="form-label">{{ form.narrative.label }}</label>
+      {{ form.narrative }}
+      {% if form.narrative.errors %}<div class="form-error">{{ form.narrative.errors.0 }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Harm Classification</h2>
+      <p class="text-muted">Select all harms that apply.</p>
+    </div>
+
+    <div class="harm-category-group">
+      <h3>Psychological Harms</h3>
+      {% for harm_item in harm_categories %}
+      <div class="harm-option {% if harm_item.0 in existing_harms %}is-selected{% endif %}">
+        <label>
+          <input type="checkbox" name="harm_sel" value="{{ harm_item.0 }}" data-category="{{ harm_item.0 }}" {% if harm_item.0 in existing_harms %}checked{% endif %}>
+          <span>{{ harm_item.1 }}</span>
+        </label>
+        <div class="harm-details" style="{% if harm_item.0 not in existing_harms %}display:none;{% endif %}">
+          <select name="harm_severity_{{ harm_item.0 }}" class="form-select">
+            <option value="">Select severity...</option>
+            <option value="1" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 1 %}selected{% endif %}>Mild</option>
+            <option value="2" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 2 %}selected{% endif %}>Moderate</option>
+            <option value="3" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 3 %}selected{% endif %}>Severe</option>
+            <option value="4" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 4 %}selected{% endif %}>Critical</option>
+          </select>
+          <select name="harm_duration_{{ harm_item.0 }}" class="form-select">
+            <option value="">Select duration...</option>
+            <option value="one_time" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "one_time" %}selected{% endif %}>One-time occurrence</option>
+            <option value="repeated_short" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "repeated_short" %}selected{% endif %}>Repeated over days or weeks</option>
+            <option value="repeated_long" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "repeated_long" %}selected{% endif %}>Recurring over months</option>
+            <option value="ongoing" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "ongoing" %}selected{% endif %}>Currently ongoing</option>
+          </select>
+          <textarea name="harm_elaboration_{{ harm_item.0 }}" class="form-textarea" rows="2" placeholder="Optional: add details about this harm...">{% if harm_item.0 in existing_harms %}{{ existing_harms.harm_item.0.elaboration }}{% endif %}</textarea>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="harm-category-group">
+      <h3>Tangible Harms</h3>
+      {% for harm_item in tangible_categories %}
+      <div class="harm-option {% if harm_item.0 in existing_harms %}is-selected{% endif %}">
+        <label>
+          <input type="checkbox" name="harm_sel" value="{{ harm_item.0 }}" data-category="{{ harm_item.0 }}" {% if harm_item.0 in existing_harms %}checked{% endif %}>
+          <span>{{ harm_item.1 }}</span>
+        </label>
+        <div class="harm-details" style="{% if harm_item.0 not in existing_harms %}display:none;{% endif %}">
+          <select name="harm_severity_{{ harm_item.0 }}" class="form-select">
+            <option value="">Select severity...</option>
+            <option value="1" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 1 %}selected{% endif %}>Mild</option>
+            <option value="2" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 2 %}selected{% endif %}>Moderate</option>
+            <option value="3" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 3 %}selected{% endif %}>Severe</option>
+            <option value="4" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.severity_score == 4 %}selected{% endif %}>Critical</option>
+          </select>
+          <select name="harm_duration_{{ harm_item.0 }}" class="form-select">
+            <option value="">Select duration...</option>
+            <option value="one_time" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "one_time" %}selected{% endif %}>One-time occurrence</option>
+            <option value="repeated_short" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "repeated_short" %}selected{% endif %}>Repeated over days or weeks</option>
+            <option value="repeated_long" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "repeated_long" %}selected{% endif %}>Recurring over months</option>
+            <option value="ongoing" {% if harm_item.0 in existing_harms and existing_harms.harm_item.0.duration == "ongoing" %}selected{% endif %}>Currently ongoing</option>
+          </select>
+          <textarea name="harm_elaboration_{{ harm_item.0 }}" class="form-textarea" rows="2" placeholder="Optional: add details about this harm...">{% if harm_item.0 in existing_harms %}{{ existing_harms.harm_item.0.elaboration }}{% endif %}</textarea>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Evidence</h2>
+    </div>
+    <div class="form-group">
+      <div class="upload-area">
+        {{ form.evidence_file }}
+        <p class="upload-label">
+          {% if incident.evidence_file %}Current file: {{ incident.evidence_file.name }}. Drop a new file to replace.{% else %}Drop a file here or click to browse. PNG, JPEG, or PDF. Max 5MB.{% endif %}
+        </p>
+      </div>
+      {% if form.evidence_file.errors %}<div class="form-error">{{ form.evidence_file.errors.0 }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a href="{% url 'incidents:detail' incident.reference_code %}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </div>
+</form>
+{% endblock %}
