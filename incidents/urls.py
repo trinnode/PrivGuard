@@ -2,7 +2,7 @@ from django.urls import path
 from incidents.views import (
     incident_list, incident_detail, incident_create, incident_edit,
     incident_delete, incident_update_status,
-    admin_list, admin_detail, admin_delete, admin_export,
+    admin_list, admin_detail, admin_delete, admin_export, admin_toggle_concealment,
 )
 
 app_name = "incidents"
@@ -10,6 +10,7 @@ app_name = "incidents"
 urlpatterns = [
     path("admin/<str:reference_code>/delete/", admin_delete, name="admin_delete"),
     path("admin/<str:reference_code>/export/", admin_export, name="admin_export"),
+    path("admin/<str:reference_code>/concealment/", admin_toggle_concealment, name="admin_toggle_concealment"),
     path("admin/<str:reference_code>/", admin_detail, name="admin_detail"),
     path("admin/", admin_list, name="admin_list"),
     path("new/", incident_create, name="create"),

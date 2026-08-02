@@ -1,5 +1,5 @@
 """
-RAGNER/Mamoru — Full Workflow Test Suite
+PrivGuard — Full Workflow Test Suite
 =========================================
 Tests every logical path, UI endpoint, edge case, and integration point.
 Run: python manage.py test tests.test_full_workflow -v2
@@ -110,8 +110,8 @@ class IncidentModelTests(TestCase):
 
     def test_incident_creation(self):
         inc = self._create_incident()
-        self.assertTrue(inc.reference_code.startswith("MMR-"))
-        self.assertEqual(len(inc.reference_code), 13)  # MMR- + 8 hex chars
+        self.assertTrue(inc.reference_code.startswith("PRG-"))
+        self.assertEqual(len(inc.reference_code), 12)  # PRG- + 8 hex chars
 
     def test_reference_code_uniqueness(self):
         i1 = self._create_incident()
@@ -1199,18 +1199,18 @@ class URLResolutionTests(TestCase):
             self.assertTrue(resolve(url))
 
     def test_incident_detail_url(self):
-        url = reverse("incidents:detail", args=["MMR-TEST1234"])
+        url = reverse("incidents:detail", args=["PRG-TEST1234"])
         match = resolve(url)
         self.assertEqual(match.url_name, "detail")
 
     def test_admin_urls(self):
         url = reverse("incidents:admin_list")
         self.assertTrue(resolve(url))
-        url = reverse("incidents:admin_detail", args=["MMR-TEST1234"])
+        url = reverse("incidents:admin_detail", args=["PRG-TEST1234"])
         self.assertTrue(resolve(url))
 
     def test_pdf_export_url(self):
-        url = reverse("reporting:export_pdf", args=["MMR-TEST1234"])
+        url = reverse("reporting:export_pdf", args=["PRG-TEST1234"])
         self.assertTrue(resolve(url))
 
     def test_resource_detail_url(self):
@@ -1238,7 +1238,7 @@ class TemplateRenderingTests(TestCase):
 
     def test_base_template_renders(self):
         response = self.client.get(reverse("landing"))
-        self.assertContains(response, "Mamoru")
+        self.assertContains(response, "PrivGuard")
         self.assertContains(response, "main.css")
         self.assertContains(response, "main.js")
 
@@ -1319,7 +1319,7 @@ class SecurityTests(TestCase):
         self.assertEqual(settings.SESSION_COOKIE_SAMESITE, "Strict")
 
     def test_evidence_file_max_size(self):
-        self.assertEqual(settings.MAX_UPLOAD_SIZE, 5 * 1024 * 1024)
+        self.assertEqual(settings.MAX_UPLOAD_SIZE, 100 * 1024)
 
     def test_allowed_upload_types(self):
         self.assertIn("image/png", settings.ALLOWED_UPLOAD_TYPES)
@@ -1850,13 +1850,13 @@ class SearchFilterTests(TestCase):
 
 class UpdatedURLTests(TestCase):
     def test_edit_url(self):
-        url = reverse("incidents:edit", args=["MMR-TEST1234"])
+        url = reverse("incidents:edit", args=["PRG-TEST1234"])
         self.assertTrue(resolve(url))
 
     def test_delete_url(self):
-        url = reverse("incidents:delete", args=["MMR-TEST1234"])
+        url = reverse("incidents:delete", args=["PRG-TEST1234"])
         self.assertTrue(resolve(url))
 
     def test_update_status_url(self):
-        url = reverse("incidents:update_status", args=["MMR-TEST1234"])
+        url = reverse("incidents:update_status", args=["PRG-TEST1234"])
         self.assertTrue(resolve(url))

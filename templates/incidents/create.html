@@ -201,7 +201,7 @@
         <div class="upload-area">
           {{ form.evidence_file }}
           <p class="upload-label">
-            Drop a file here or click to browse. PNG, JPEG, or PDF. Max 5MB.
+            Drop a file here or click to browse. PNG, JPEG, or PDF. Max 100KB.
           </p>
         </div>
         {% if form.evidence_file.errors %}<div class="form-error">{{ form.evidence_file.errors.0 }}</div>{% endif %}
@@ -215,6 +215,15 @@
           <label for="{{ form.is_anonymous.id_for_label }}">
             <strong>{{ form.is_anonymous.label }}</strong>
             <br><span class="text-muted-sm">Your identity will not be stored with this report. You will still be able to access it through your account.</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-checkbox">
+          {{ form.anonymize_requested }}
+          <label for="{{ form.anonymize_requested.id_for_label }}">
+            <strong>{{ form.anonymize_requested.label }}</strong>
+            <br><span class="text-muted-sm">When enabled, an admin will review your request. Once granted, your identity and relevant details will be redacted in any exported version of this report.</span>
           </label>
         </div>
       </div>

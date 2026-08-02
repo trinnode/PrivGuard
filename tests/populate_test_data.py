@@ -1,5 +1,5 @@
 """
-Test data population script for the Mamoru Privacy Incident Reporting System.
+Test data population script for the PrivGuard Privacy Incident Reporting System.
 Run with: python manage.py shell < tests/populate_test_data.py
 """
 import os

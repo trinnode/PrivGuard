@@ -121,5 +121,13 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 
-MAX_UPLOAD_SIZE = 5 * 1024 * 1024
+MAX_UPLOAD_SIZE = 100 * 1024  # 100KB
 ALLOWED_UPLOAD_TYPES = ["image/png", "image/jpeg", "application/pdf"]
+
+# UploadThing (evidence storage on serverless/Vercel). When a token is set,
+# evidence files are uploaded to UploadThing and only the file key is stored.
+# Otherwise the platform falls back to local MEDIA_ROOT storage (local dev).
+UPLOADTHING_TOKEN = config("UPLOADTHING_TOKEN", default="")
+UPLOADTHING_SECRET = config("UPLOADTHING_SECRET", default="")
+UPLOADTHING_ENABLED = bool(UPLOADTHING_TOKEN or UPLOADTHING_SECRET)
+UPLOADTHING_CDN_URL = config("UPLOADTHING_CDN_URL", default="https://utfs.io/f")

@@ -19,6 +19,7 @@ class IncidentForm(forms.ModelForm):
             "severity_rating",
             "evidence_file",
             "is_anonymous",
+            "anonymize_requested",
         ]
         widgets = {
             "date_of_occurrence": forms.DateInput(
@@ -36,7 +37,8 @@ class IncidentForm(forms.ModelForm):
         }
         help_texts = {
             "narrative": "",
-            "evidence_file": "Screenshot or document. Max 5MB. PNG, JPEG, or PDF only.",
+            "evidence_file": "Screenshot or document. Max 100KB. PNG, JPEG, or PDF only.",
+            "anonymize_requested": "When enabled, an admin will review your request. Once granted, your identity and relevant details will be redacted in any exported version of this report.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -44,17 +46,22 @@ class IncidentForm(forms.ModelForm):
         self.fields["platform_name"].required = False
         self.fields["actor_description"].required = False
         self.fields["evidence_file"].required = False
+        self.fields["anonymize_requested"].widget = forms.CheckboxInput(
+            attrs={"class": "form-checkbox-input"}
+        )
+        self.fields["anonymize_requested"].label = "Request identity concealment on exported reports"
         self.fields["platform_category"].empty_label = "Select a platform..."
         self.fields["incident_classification"].empty_label = "Select the type of violation..."
         self.fields["actor_involvement"].empty_label = "Select who was involved..."
         self.fields["severity_rating"].empty_label = "Select severity level..."
 
     def clean_evidence_file(self, *args, **kwargs):
+        from django.conf import settings
         file = self.cleaned_data.get("evidence_file")
         if file:
-            if file.size > 5 * 1024 * 1024:
-                raise forms.ValidationError("File size must be 5MB or less.")
-            if file.content_type not in ["image/png", "image/jpeg", "application/pdf"]:
+            if file.size > settings.MAX_UPLOAD_SIZE:
+                raise forms.ValidationError("File size must be 100KB or less.")
+            if file.content_type not in settings.ALLOWED_UPLOAD_TYPES:
                 raise forms.ValidationError("Only PNG, JPEG, and PDF files are allowed.")
         return file
 

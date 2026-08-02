@@ -1,4 +1,5 @@
 import hashlib
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,6 +10,8 @@ from django.core.paginator import Paginator
 from incidents.models import Incident, Harm, AuditLog
 from incidents.forms import IncidentForm
 from incidents.taxonomy import HARM_CATEGORIES
+from incidents import uploadthing
+from reporting.pdf_generator import redact_identity
 
 
 def get_client_ip_hash(request):
@@ -62,7 +65,12 @@ def incident_detail(request, reference_code):
         user=request.user,
     )
     log_audit(request, "incident_view", f"Viewed incident {reference_code}")
-    return render(request, "incidents/detail.html", {"incident": incident})
+    from resources.models import Resource
+    recommended = Resource.recommended_for(incident)
+    return render(request, "incidents/detail.html", {
+        "incident": incident,
+        "recommended_resources": recommended,
+    })
 
 
 @login_required
@@ -76,7 +84,18 @@ def incident_edit(request, reference_code):
     if request.method == "POST":
         form = IncidentForm(request.POST, request.FILES, instance=incident)
         if form.is_valid():
-            form.save()
+            if settings.UPLOADTHING_ENABLED:
+                saved = form.save(commit=False)
+                new_file = form.cleaned_data.get("evidence_file")
+                if new_file:
+                    old_name = saved.evidence_file.name if saved.evidence_file else ""
+                    if old_name and saved.evidence_is_remote:
+                        uploadthing.delete_evidence(old_name)
+                    key, _ = uploadthing.upload_evidence(new_file)
+                    saved.evidence_file = key
+                saved.save()
+            else:
+                form.save()
             log_audit(request, "incident_create", f"Updated incident {reference_code}")
             messages.success(request, "Incident updated successfully.")
             return redirect("incidents:detail", reference_code=reference_code)
@@ -105,6 +124,8 @@ def incident_delete(request, reference_code):
         Incident, reference_code=reference_code, user=request.user,
     )
     log_audit(request, "incident_create", f"Deleted incident {reference_code}")
+    if settings.UPLOADTHING_ENABLED and incident.evidence_is_remote:
+        uploadthing.delete_evidence(incident.evidence_file.name)
     incident.delete()
     messages.success(request, f"Incident {reference_code} has been deleted.")
     return redirect("incidents:list")
@@ -137,6 +158,11 @@ def incident_create(request):
             incident.user = request.user if request.user.is_authenticated else None
             if not request.user.is_authenticated:
                 incident.is_anonymous = True
+            if settings.UPLOADTHING_ENABLED:
+                new_file = form.cleaned_data.get("evidence_file")
+                if new_file:
+                    key, _ = uploadthing.upload_evidence(new_file)
+                    incident.evidence_file = key
             incident.save()
 
             selected_harms = request.POST.getlist("harm_sel")
@@ -206,7 +232,43 @@ def admin_list(request):
     if status_filter:
         incidents = incidents.filter(status=status_filter)
 
-    anonymized_count = Incident.objects.filter(anonymize_requested=True).count()
+    concealment_filter = request.GET.get("concealment", "")
+    if concealment_filter == "active":
+        incidents = incidents.filter(
+            Q(concealment_status="granted") | Q(user__anonymize_requested=True)
+        )
+    elif concealment_filter == "requested":
+        incidents = incidents.filter(concealment_status="requested")
+    elif concealment_filter == "revoked":
+        incidents = incidents.filter(concealment_status="revoked")
+
+    classification_filter = request.GET.get("classification", "")
+    if classification_filter:
+        incidents = incidents.filter(incident_classification=classification_filter)
+
+    platform_filter = request.GET.get("platform", "")
+    if platform_filter:
+        incidents = incidents.filter(platform_category=platform_filter)
+
+    severity_filter = request.GET.get("severity", "")
+    if severity_filter:
+        incidents = incidents.filter(severity_rating=severity_filter)
+
+    date_from = request.GET.get("date_from", "").strip()
+    date_to = request.GET.get("date_to", "").strip()
+    if date_from:
+        incidents = incidents.filter(date_of_occurrence__gte=date_from)
+    if date_to:
+        incidents = incidents.filter(date_of_occurrence__lte=date_to)
+
+    incidents = incidents.order_by("-created_at")
+
+    requested_count = Incident.objects.filter(concealment_status="requested").count()
+    active_count = Incident.objects.filter(
+        Q(concealment_status="granted") | Q(user__anonymize_requested=True)
+    ).count()
+
+    from incidents.taxonomy import PLATFORM_CATEGORIES, INCIDENT_CLASSIFICATIONS, SEVERITY_LEVELS
 
     paginator = Paginator(incidents, 15)
     page_number = request.GET.get("page")
@@ -215,9 +277,19 @@ def admin_list(request):
     return render(request, "incidents/admin_list.html", {
         "page_obj": page_obj,
         "incidents": page_obj,
-        "anonymized_count": anonymized_count,
+        "requested_count": requested_count,
+        "active_count": active_count,
         "search_query": search,
         "status_filter": status_filter,
+        "concealment_filter": concealment_filter,
+        "classification_filter": classification_filter,
+        "platform_filter": platform_filter,
+        "severity_filter": severity_filter,
+        "date_from": date_from,
+        "date_to": date_to,
+        "classification_choices": INCIDENT_CLASSIFICATIONS,
+        "platform_choices": PLATFORM_CATEGORIES,
+        "severity_choices": SEVERITY_LEVELS,
     })
 
 
@@ -231,7 +303,12 @@ def admin_detail(request, reference_code):
         reference_code=reference_code,
     )
     log_audit(request, "admin_action", f"Admin viewed incident {reference_code}")
-    return render(request, "incidents/admin_detail.html", {"incident": incident})
+    from resources.models import Resource
+    recommended = Resource.recommended_for(incident)
+    return render(request, "incidents/admin_detail.html", {
+        "incident": incident,
+        "recommended_resources": recommended,
+    })
 
 
 @login_required
@@ -242,6 +319,8 @@ def admin_delete(request, reference_code):
         return redirect("dashboard:home")
     incident = get_object_or_404(Incident, reference_code=reference_code)
     log_audit(request, "admin_action", f"Admin deleted incident {reference_code}")
+    if settings.UPLOADTHING_ENABLED and incident.evidence_is_remote:
+        uploadthing.delete_evidence(incident.evidence_file.name)
     incident.delete()
     messages.success(request, f"Incident {reference_code} has been deleted.")
     return redirect("incidents:admin_list")
@@ -256,9 +335,44 @@ def admin_export(request, reference_code):
         Incident.objects.select_related("user").prefetch_related("harms"),
         reference_code=reference_code,
     )
-    conceal = incident.anonymize_requested
+    conceal = incident.concealment_active
     log_audit(request, "incident_export", f"Admin exported incident {reference_code} (conceal={conceal})")
-    return render(request, "incidents/export.html", {
+    context = {
         "incident": incident,
         "conceal": conceal,
-    })
+    }
+    if conceal:
+        context["redacted_narrative"] = redact_identity(incident.narrative, incident)
+        context["redacted_actor"] = redact_identity(incident.actor_description, incident)
+        context["redacted_harms"] = {
+            h.pk: redact_identity(h.elaboration, incident)
+            for h in incident.harms.all()
+            if h.elaboration
+        }
+    return render(request, "incidents/export.html", context)
+
+
+@login_required
+@require_POST
+def admin_toggle_concealment(request, reference_code):
+    if request.user.role != "admin":
+        messages.error(request, "You do not have permission to access this page.")
+        return redirect("dashboard:home")
+    incident = get_object_or_404(Incident, reference_code=reference_code)
+    action = request.POST.get("action", "")
+    if action == "grant":
+        incident.anonymize_requested = True
+        incident.concealment_status = "granted"
+        log_audit(request, "admin_action", f"Admin granted concealment for {reference_code}")
+        messages.success(request, "Identity concealment granted for this incident.")
+    elif action == "deny":
+        incident.anonymize_requested = False
+        incident.concealment_status = "revoked"
+        log_audit(request, "admin_action", f"Admin denied concealment request for {reference_code}")
+        messages.warning(request, "Concealment request denied. Reporter identity remains visible in exports.")
+    elif action == "revoke":
+        incident.concealment_status = "revoked"
+        log_audit(request, "admin_action", f"Admin revoked concealment for {reference_code}")
+        messages.success(request, "Identity concealment revoked for this incident.")
+    incident.save(update_fields=["anonymize_requested", "concealment_status"])
+    return redirect("incidents:admin_detail", reference_code=reference_code)

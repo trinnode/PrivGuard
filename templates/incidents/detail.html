@@ -16,6 +16,11 @@
       <p class="subtitle">Reported on {{ incident.created_at|date:"F j, Y \a\t g:i A" }}</p>
     </div>
     <div class="header-actions">
+      {% if incident.concealment_status == "granted" %}
+      <span class="badge badge-severe">&#128274; Concealment active</span>
+      {% elif incident.concealment_status == "requested" %}
+      <span class="badge badge-warning">&#128274; Concealment request pending review</span>
+      {% endif %}
       <a href="{% url 'incidents:edit' incident.reference_code %}" class="btn btn-secondary">Edit</a>
       <a href="{% url 'reporting:export_pdf' incident.reference_code %}" class="btn btn-primary">Export PDF</a>
     </div>
@@ -84,7 +89,7 @@
       <div class="detail-section">
         <h3>Evidence</h3>
         <p class="detail-value">
-          <a href="{{ incident.evidence_file.url }}" target="_blank" rel="noopener noreferrer" class="link-external">
+          <a href="{{ incident.evidence_url }}" target="_blank" rel="noopener noreferrer" class="link-external">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             View attached file
           </a>
@@ -130,6 +135,35 @@
         {% endif %}
       </div>
       {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if recommended_resources %}
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Recommended Support</h2>
+        <span class="badge badge-accent">{{ recommended_resources|length }} resources</span>
+      </div>
+      <p class="text-muted-sm" style="margin-bottom:var(--sp-3);">Based on the classification and harms you reported, you may wish to contact:</p>
+      {% for resource in recommended_resources %}
+      <div class="harm-detail-item {% if not forloop.last %}has-border{% endif %}">
+        <div class="harm-detail-header">
+          <h3>{{ resource.title }}</h3>
+          <span class="badge badge-muted">{{ resource.get_category_display }}</span>
+        </div>
+        {% if resource.contact_phone %}
+        <div class="harm-detail-meta">
+          <span>Phone: <a href="tel:{{ resource.contact_phone }}" class="link-muted">{{ resource.contact_phone }}</a></span>
+        </div>
+        {% endif %}
+        {% if resource.external_link %}
+        <a href="{{ resource.external_link }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="margin-top:var(--sp-2);">Open Resource</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+      <div style="margin-top:var(--sp-3);">
+        <a href="{% url 'resources:list' %}" class="btn btn-sm btn-secondary">Browse all support resources</a>
+      </div>
     </div>
     {% endif %}
 

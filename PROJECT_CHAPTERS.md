@@ -152,7 +152,7 @@ The system employs a three tier architecture comprising the presentation tier, t
 
 Figure 3.1: System Architecture Diagram
 
-The figure below illustrates the three tier architecture of the Mamoru Privacy Incident Reporting System, showing the browser client, the Django application server with its modular app structure, and the PostgreSQL database.
+The figure below illustrates the three tier architecture of the PrivGuard Privacy Incident Reporting System, showing the browser client, the Django application server with its modular app structure, and the PostgreSQL database.
 
 [Figure 3.1: Three Tier System Architecture]
 
@@ -226,7 +226,7 @@ The user interface was designed following the principles of progressive disclosu
 
 The design system implements a warm colour palette centred on terracotta accents with neutral backgrounds, supporting both light and dark themes through CSS custom properties. Typography uses the Raleway font family for headings and system fonts for body text, ensuring readability across devices.
 
-Plate I: Landing page of the Mamoru Privacy Incident Reporting System
+Plate I: Landing page of the PrivGuard Privacy Incident Reporting System
 
 Plate II: Multi step incident reporting wizard (Step one, incident information)
 
@@ -267,7 +267,7 @@ RESULTS AND DISCUSSION: SYSTEM IMPLEMENTATION AND TESTING
 
 4.0 INTRODUCTION
 
-This chapter presents the results of the survey on privacy incidents experienced by Nigerian university students, the implementation of the Mamoru Privacy Incident Reporting System, and the findings of the usability evaluation. The chapter is organised into four sections. The first section presents the demographic characteristics of respondents and their platform usage patterns. The second section analyses the types, severity and psychological impact of reported privacy incidents. The third section describes the system implementation including screenshots of key interfaces. The fourth section presents the usability evaluation results using the System Usability Scale and Technology Acceptance Model constructs.
+This chapter presents the results of the survey on privacy incidents experienced by Nigerian university students, the implementation of the PrivGuard Privacy Incident Reporting System, and the findings of the usability evaluation. The chapter is organised into four sections. The first section presents the demographic characteristics of respondents and their platform usage patterns. The second section analyses the types, severity and psychological impact of reported privacy incidents. The third section describes the system implementation including screenshots of key interfaces. The fourth section presents the usability evaluation results using the System Usability Scale and Technology Acceptance Model constructs.
 
 4.1 DEMOGRAPHIC CHARACTERISTICS OF RESPONDENTS
 
@@ -399,7 +399,7 @@ Shame and embarrassment at forty three point five percent is particularly releva
 
 4.6 SYSTEM IMPLEMENTATION
 
-The Mamoru Privacy Incident Reporting System was implemented as a web based application using the technology stack described in Section 3.12. The system comprises five Django applications: accounts for user management, incidents for reporting and classification, dashboard for statistical overview, reporting for PDF export, and resources for the guidance library. The following subsections describe the key implemented features with reference to the system interfaces.
+The PrivGuard Privacy Incident Reporting System was implemented as a web based application using the technology stack described in Section 3.12. The system comprises five Django applications: accounts for user management, incidents for reporting and classification, dashboard for statistical overview, reporting for PDF export, and resources for the guidance library. The following subsections describe the key implemented features with reference to the system interfaces.
 
 4.6.1 User Registration and Authentication
 
@@ -527,7 +527,7 @@ The survey results establish that Nigerian university students experience a high
 
 The predominance of psychological harms over tangible harms in the survey data corroborates the findings of Chapman et al. (2025) and George et al. (2023), who demonstrated that psychological safety loss represents the dominant category of lived privacy harms. The adapted taxonomy proved effective in capturing the nuanced spectrum of harms experienced by Nigerian students, with anxiety, distress and loss of trust emerging as the three most prevalent psychological categories.
 
-The usability evaluation results demonstrate that the Mamoru system achieves excellent usability (SUS score of 80.3) and strong user acceptance (TAM perceived usefulness of 5.71 and perceived ease of use of 5.68). The multi step wizard approach was particularly praised for reducing the complexity traditionally associated with formal reporting processes. The anonymous submission feature and identity concealment options address the fear of retaliation identified as a significant barrier in the survey results.
+The usability evaluation results demonstrate that the PrivGuard system achieves excellent usability (SUS score of 80.3) and strong user acceptance (TAM perceived usefulness of 5.71 and perceived ease of use of 5.68). The multi step wizard approach was particularly praised for reducing the complexity traditionally associated with formal reporting processes. The anonymous submission feature and identity concealment options address the fear of retaliation identified as a significant barrier in the survey results.
 
 The integration of the adapted harm taxonomy into the reporting workflow enables users to classify their experiences using categories that reflect the psychological, emotional and relational dimensions of privacy violations. This approach directly addresses the limitation of existing taxonomies identified in the literature review, which overemphasise legally provable, tangible harms at the expense of lived experience.
 
@@ -535,7 +535,7 @@ The resource library provides context appropriate guidance that connects inciden
 
 4.9 SUMMARY OF CHAPTER
 
-This chapter presented the results of the cross sectional survey on privacy incidents among Nigerian university students, the implementation of the Mamoru Privacy Incident Reporting System and the findings of the usability evaluation. The survey revealed high incident prevalence, low reporting rates and a predominance of psychological harms. The system achieved excellent usability scores and strong user acceptance, with particular strengths in ease of use, structured documentation and cultural relevance. The findings validate the research objectives and demonstrate the feasibility of developing contextually adapted privacy reporting tools for Nigerian university students.
+This chapter presented the results of the cross sectional survey on privacy incidents among Nigerian university students, the implementation of the PrivGuard Privacy Incident Reporting System and the findings of the usability evaluation. The survey revealed high incident prevalence, low reporting rates and a predominance of psychological harms. The system achieved excellent usability scores and strong user acceptance, with particular strengths in ease of use, structured documentation and cultural relevance. The findings validate the research objectives and demonstrate the feasibility of developing contextually adapted privacy reporting tools for Nigerian university students.
 
 
 CHAPTER FIVE
@@ -548,7 +548,7 @@ This study investigated the privacy incidents and associated lived harms experie
 
 The study began with a comprehensive literature review that traced the evolution of privacy taxonomies from legalistic, harm centred frameworks toward sociotechnical, experience driven models that prioritise psychological safety and contextual accuracy. The review established that existing frameworks inadequately capture the lived realities of Nigerian digital users and that current reporting mechanisms remain fragmented and misaligned with user needs.
 
-A cross sectional survey of three hundred and seventy seven students at the Federal University of Technology Minna collected primary data on incident types, harm classifications, platform usage patterns and reporting barriers. The survey instrument was validated through expert review (CVI of 0.91) and pilot testing (Cronbach's alpha of 0.87). The findings informed the design and development of the Mamoru system, a web based prototype built using Django 5.0.6, PostgreSQL 16, HTML5, CSS3 and vanilla JavaScript.
+A cross sectional survey of three hundred and seventy seven students at the Federal University of Technology Minna collected primary data on incident types, harm classifications, platform usage patterns and reporting barriers. The survey instrument was validated through expert review (CVI of 0.91) and pilot testing (Cronbach's alpha of 0.87). The findings informed the design and development of the PrivGuard system, a web based prototype built using Django 5.0.6, PostgreSQL 16, HTML5, CSS3 and vanilla JavaScript.
 
 The system was evaluated through a structured usability assessment with twenty participants, using the System Usability Scale, Technology Acceptance Model constructs and semi structured interviews. The evaluation yielded a SUS score of 80.3, perceived usefulness of 5.71 and perceived ease of use of 5.68, confirming that the system achieves excellent usability and strong user acceptance.
 
@@ -660,7 +660,7 @@ Yamane, T. (1967). Statistics: An Introductory Analysis (2nd ed.). Harper and Ro
 
 APPENDIX A: SOURCE CODE
 
-The following sections present the key source code files of the Mamoru Privacy Incident Reporting System.
+The following sections present the key source code files of the PrivGuard Privacy Incident Reporting System.
 
 A.1 USER MODEL (accounts/models.py)
 
@@ -775,7 +775,7 @@ class Incident(models.Model):
 
     def _generate_reference(self):
         import uuid
-        return f"MMR-{uuid.uuid4().hex[:8].upper()}"
+        return f"PRG-{uuid.uuid4().hex[:8].upper()}"
 ```
 
 A.3 HARM TAXONOMY (incidents/taxonomy.py)
@@ -1015,7 +1015,7 @@ The following script populates the database with sample data for testing the sys
 
 ```python
 """
-Test data population script for the Mamoru Privacy Incident Reporting System.
+Test data population script for the PrivGuard Privacy Incident Reporting System.
 Run with: python manage.py shell < tests/populate_test_data.py
 """
 import os

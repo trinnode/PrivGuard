@@ -24,6 +24,15 @@
 <div class="card" style="max-width:800px;">
   <div class="narrative-content">{{ resource.description }}</div>
 
+  {% if resource.contact_phone %}
+  <div style="margin-top:var(--sp-4); padding-top:var(--sp-4); border-top:1px solid var(--border-light);">
+    <strong style="font-size:.85rem; color:var(--text-secondary);">Contact</strong>
+    <p style="margin-top:var(--sp-1);">
+      <a href="tel:{{ resource.contact_phone }}" class="btn btn-sm btn-primary">{{ resource.contact_phone }}</a>
+    </p>
+  </div>
+  {% endif %}
+
   {% if resource.relevance_tags %}
   <div style="margin-top:var(--sp-5); padding-top:var(--sp-4); border-top:1px solid var(--border-light);">
     <strong style="font-size:.85rem; color:var(--text-secondary);">Tags</strong>

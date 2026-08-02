@@ -1,5 +1,5 @@
 """
-RAGNER Comprehensive Test Suite
+PrivGuard Comprehensive Test Suite
 Tests all workflows, edge cases, and debugging scenarios.
 """
 import os
@@ -129,8 +129,8 @@ class IncidentModelComprehensiveTests(TestCase):
             actor_involvement="known_person",
             severity_rating=3,
         )
-        self.assertTrue(incident.reference_code.startswith("MMR-"))
-        self.assertEqual(len(incident.reference_code), 12)  # MMR- + 8 hex chars
+        self.assertTrue(incident.reference_code.startswith("PRG-"))
+        self.assertEqual(len(incident.reference_code), 12)  # PRG- + 8 hex chars
         self.assertEqual(incident.user, self.user)
         self.assertEqual(incident.harms.count(), 0)
         self.assertFalse(incident.is_anonymous)
@@ -160,7 +160,7 @@ class IncidentModelComprehensiveTests(TestCase):
             actor_involvement="stranger",
             severity_rating=2,
         )
-        self.assertRegex(incident.reference_code, r'^MMR-[0-9A-F]{8}$')
+        self.assertRegex(incident.reference_code, r'^PRG-[0-9A-F]{8}$')
 
     def test_harm_summary(self):
         incident = Incident.objects.create(

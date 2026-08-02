@@ -39,6 +39,9 @@
     </div>
     <h3>{{ resource.title }}</h3>
     <p>{{ resource.description|truncatechars:160 }}</p>
+    {% if resource.contact_phone %}
+    <p class="text-muted-sm"><strong>Contact:</strong> <a href="tel:{{ resource.contact_phone }}" class="link-muted">{{ resource.contact_phone }}</a></p>
+    {% endif %}
     {% if resource.relevance_tags %}
     <div class="resource-tags">
       {% for tag in resource.tag_list|slice:":4" %}

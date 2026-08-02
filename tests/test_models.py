@@ -53,7 +53,7 @@ class IncidentModelTests(TestCase):
             actor_involvement="known_person",
             severity_rating=3,
         )
-        self.assertTrue(incident.reference_code.startswith("ST-"))
+        self.assertTrue(incident.reference_code.startswith("PRG-"))
         self.assertEqual(incident.user, self.user)
         self.assertEqual(incident.harms.count(), 0)
 

@@ -1,5 +1,6 @@
 """PDF report generation for incident documentation using ReportLab."""
 import io
+import re
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm, cm
@@ -20,6 +21,39 @@ LIGHT_GREY = HexColor("#F5F3EE")
 MID_GREY = HexColor("#E4E0D9")
 
 
+REDACTED_MARKER = "[REDACTED]"
+
+
+def should_conceal(incident):
+    """True when the reporter's identity must be hidden in an export."""
+    return bool(incident.concealment_active)
+
+
+def redact_identity(text, incident):
+    """Replace the reporter's identifiable details with a redaction marker.
+
+    Scans free-text fields (narrative, actor description, harm elaborations,
+    evidence reference) for the reporter's email, full name and institution and
+    replaces them so exported reports never leak the reporter's identity when
+    concealment is active.
+    """
+    if not text:
+        return text
+    user = incident.user
+    markers = []
+    if user:
+        if user.email:
+            markers.append(user.email)
+        if user.full_name:
+            markers.append(user.full_name)
+        if user.institution:
+            markers.append(user.institution)
+    for marker in markers:
+        if marker and len(marker.strip()) >= 3:
+            text = re.sub(re.escape(marker), REDACTED_MARKER, text, flags=re.IGNORECASE)
+    return text
+
+
 def _cover_page_footer(canvas, doc):
     """Draw footer on cover page only."""
     canvas.saveState()
@@ -27,7 +61,7 @@ def _cover_page_footer(canvas, doc):
     canvas.setFillColor(HexColor("#999999"))
     canvas.drawCentredString(
         A4[0] / 2, 15 * mm,
-        "Mamoru Privacy Incident Reporting System"
+        "PrivGuard Privacy Incident Reporting System"
     )
     canvas.restoreState()
 
@@ -43,7 +77,7 @@ def _content_page_template(canvas, doc):
 
     canvas.setFont("Helvetica", 7)
     canvas.setFillColor(HexColor("#999999"))
-    canvas.drawString(20 * mm, height - 13 * mm, "Mamoru Privacy Incident Reports")
+    canvas.drawString(20 * mm, height - 13 * mm, "PrivGuard Privacy Incident Reports")
     canvas.drawRightString(width - 20 * mm, height - 13 * mm, f"Page {doc.page}")
 
     canvas.setStrokeColor(MID_GREY)
@@ -57,8 +91,14 @@ def _content_page_template(canvas, doc):
     canvas.restoreState()
 
 
-def generate_incident_report(incident):
-    """Generates a PDF byte stream for a given incident report."""
+def generate_incident_report(incident, conceal=None):
+    """Generates a PDF byte stream for a given incident report.
+
+    ``conceal`` defaults to the incident's concealment state and, when active,
+    the reporter's identity is redacted from the exported document.
+    """
+    if conceal is None:
+        conceal = should_conceal(incident)
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -140,14 +180,26 @@ def generate_incident_report(incident):
     if incident.platform_name:
         details.insert(1, ("Specific Platform", incident.platform_name))
     if incident.actor_description:
-        details.append(("Actor Description", incident.actor_description))
+        actor_desc = (
+            redact_identity(incident.actor_description, incident)
+            if conceal else incident.actor_description
+        )
+        details.append(("Actor Description", actor_desc))
 
     for label, value in details:
         elements.append(Paragraph(label, label_style))
         elements.append(Paragraph(str(value), value_style))
 
+    if conceal:
+        elements.append(Paragraph(
+            f'<font color="#C75B39">&#128274; Identity concealment enabled &mdash; '
+            f'reporter details have been redacted.</font>',
+            value_style,
+        ))
+
     elements.append(Paragraph("Incident Description", section_style))
-    elements.append(Paragraph(incident.narrative, value_style))
+    narrative = redact_identity(incident.narrative, incident) if conceal else incident.narrative
+    elements.append(Paragraph(narrative, value_style))
 
     harms = incident.harms.all()
     if harms:
@@ -164,8 +216,12 @@ def generate_incident_report(incident):
                 Paragraph(h.get_duration_display(), value_style),
             ])
             if h.elaboration:
+                elaboration = (
+                    redact_identity(h.elaboration, incident)
+                    if conceal else h.elaboration
+                )
                 harm_data.append([
-                    Paragraph(f"<i>{h.elaboration}</i>", ParagraphStyle(
+                    Paragraph(f"<i>{elaboration}</i>", ParagraphStyle(
                         "Elab", parent=value_style, fontSize=9, textColor=GRAPHITE,
                     )),
                     "", "",
@@ -187,8 +243,12 @@ def generate_incident_report(incident):
 
     if incident.evidence_file:
         elements.append(Paragraph("Evidence", section_style))
+        if conceal:
+            evidence_ref = REDACTED_MARKER
+        else:
+            evidence_ref = incident.evidence_url or f"{incident.evidence_file.name}"
         elements.append(Paragraph(
-            f"Evidence file attached: {incident.evidence_file.name}",
+            f"Evidence file attached: {evidence_ref}",
             value_style,
         ))
 
@@ -196,7 +256,7 @@ def generate_incident_report(incident):
     elements.append(HRFlowable(width="100%", color=HexColor("#CCCCCC"), thickness=0.5))
     elements.append(Spacer(1, 3 * mm))
     elements.append(Paragraph(
-        "This report is generated by Mamoru Privacy Incident Reporting System. "
+        "This report is generated by PrivGuard Privacy Incident Reporting System. "
         "This document contains sensitive personal information and should be handled with confidentiality.",
         footer_style,
     ))
@@ -227,8 +287,8 @@ def generate_bulk_report(incidents):
     doc = BaseDocTemplate(
         buffer,
         pagesize=A4,
-        title="Mamoru Privacy Incident Reports",
-        author="Mamoru System",
+        title="PrivGuard Privacy Incident Reports",
+        author="PrivGuard System",
     )
 
     cover_template = PageTemplate(
@@ -352,7 +412,7 @@ def generate_bulk_report(incidents):
     # =================== COVER PAGE ===================
     elements.append(NextPageTemplate("cover"))
     elements.append(Spacer(1, 50 * mm))
-    elements.append(Paragraph("MAMORU", ParagraphStyle(
+    elements.append(Paragraph("PRIVGUARD", ParagraphStyle(
         "BrandMark",
         parent=styles["Normal"],
         textColor=TERRACOTTA,
@@ -373,7 +433,7 @@ def generate_bulk_report(incidents):
     elements.append(Spacer(1, 30 * mm))
     elements.append(Paragraph(
         "This document contains confidential privacy incident reports generated "
-        "by the Mamoru Privacy Incident Reporting System. All information contained "
+        "by the PrivGuard Privacy Incident Reporting System. All information contained "
         "herein is sensitive and should be handled with appropriate confidentiality.",
         ParagraphStyle(
             "Disclaimer",
@@ -444,6 +504,7 @@ def generate_bulk_report(incidents):
     # =================== INDIVIDUAL INCIDENT PAGES ===================
     for idx, inc in enumerate(incidents, 1):
         elements.append(PageBreak())
+        conceal = should_conceal(inc)
 
         elements.append(Paragraph(
             f"INCIDENT REPORT {idx} OF {count}",
@@ -470,9 +531,16 @@ def generate_bulk_report(incidents):
         if inc.platform_name:
             details_left.insert(1, ("Specific Platform", inc.platform_name))
         if inc.actor_description:
-            details_left.append(("Actor Description", inc.actor_description))
+            actor_desc = (
+                redact_identity(inc.actor_description, inc)
+                if conceal else inc.actor_description
+            )
+            details_left.append(("Actor Description", actor_desc))
         if inc.user:
-            details_right.append(("Reporter", inc.user.email))
+            details_right.append((
+                "Reporter",
+                REDACTED_MARKER if conceal else inc.user.email,
+            ))
 
         detail_rows = []
         max_len = max(len(details_left), len(details_right))
@@ -512,7 +580,15 @@ def generate_bulk_report(incidents):
         # Narrative
         elements.append(Spacer(1, 2 * mm))
         elements.append(Paragraph("Incident Description", section_style))
-        elements.append(Paragraph(inc.narrative, narrative_style))
+        narrative = redact_identity(inc.narrative, inc) if conceal else inc.narrative
+        elements.append(Paragraph(narrative, narrative_style))
+
+        if conceal:
+            elements.append(Paragraph(
+                f'<font color="#C75B39">&#128274; Identity concealment enabled '
+                f'&mdash; reporter details have been redacted for this report.</font>',
+                small_style,
+            ))
 
         # Harms
         harms = inc.harms.all()
@@ -535,9 +611,13 @@ def generate_bulk_report(incidents):
                     Paragraph(h.get_duration_display(), ParagraphStyle("HD", parent=value_style, fontSize=9, spaceAfter=0)),
                 ])
                 if h.elaboration:
+                    elaboration = (
+                        redact_identity(h.elaboration, inc)
+                        if conceal else h.elaboration
+                    )
                     harm_data.append([
                         Paragraph(
-                            f'<i><font color="#4A4A4A">"{h.elaboration}"</font></i>',
+                            f'<i><font color="#4A4A4A">"{elaboration}"</font></i>',
                             ParagraphStyle("HE", parent=small_style, fontSize=8, spaceAfter=0, leading=12),
                         ),
                         "", "",
@@ -561,8 +641,12 @@ def generate_bulk_report(incidents):
         if inc.evidence_file:
             elements.append(Spacer(1, 3 * mm))
             elements.append(Paragraph("Evidence", section_style))
+            if conceal:
+                evidence_ref = REDACTED_MARKER
+            else:
+                evidence_ref = inc.evidence_url or f"{inc.evidence_file.name}"
             elements.append(Paragraph(
-                f"Evidence file attached: {inc.evidence_file.name}",
+                f"Evidence file attached: {evidence_ref}",
                 value_style,
             ))
 
@@ -580,29 +664,45 @@ def generate_bulk_report(incidents):
     return buffer
 
 
-def generate_text_summary(incident):
+def generate_text_summary(incident, conceal=None):
     """Generates plain text summary as fallback when PDF generation fails."""
+    if conceal is None:
+        conceal = should_conceal(incident)
     lines = []
     lines.append("=" * 50)
     lines.append("PRIVACY INCIDENT REPORT")
     lines.append(f"Reference: {incident.reference_code}")
     lines.append("=" * 50)
     lines.append("")
+    if conceal:
+        lines.append("IDENTITY CONCEALMENT ENABLED - REPORTER DETAILS REDACTED")
+        lines.append("")
     lines.append("INCIDENT DETAILS")
     lines.append(f"  Platform: {incident.get_platform_category_display()}")
     lines.append(f"  Date: {incident.date_of_occurrence}")
     lines.append(f"  Type: {incident.get_incident_classification_display()}")
     lines.append(f"  Actor: {incident.get_actor_involvement_display()}")
     lines.append(f"  Severity: {incident.get_severity_rating_display()}")
+    if incident.actor_description:
+        actor_desc = (
+            redact_identity(incident.actor_description, incident)
+            if conceal else incident.actor_description
+        )
+        lines.append(f"  Actor Details: {actor_desc}")
     lines.append("")
     lines.append("DESCRIPTION")
-    lines.append(f"  {incident.narrative}")
+    narrative = redact_identity(incident.narrative, incident) if conceal else incident.narrative
+    lines.append(f"  {narrative}")
     lines.append("")
     lines.append("HARMS")
     for harm in incident.harms.all():
         lines.append(f"  - {harm.get_harm_category_display()} (Severity: {harm.get_severity_score_display()})")
         if harm.elaboration:
-            lines.append(f"    {harm.elaboration}")
+            elaboration = (
+                redact_identity(harm.elaboration, incident)
+                if conceal else harm.elaboration
+            )
+            lines.append(f"    {elaboration}")
     lines.append("")
     lines.append("=" * 50)
     return "\n".join(lines)

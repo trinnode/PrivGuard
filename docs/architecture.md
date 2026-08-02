@@ -1,4 +1,4 @@
-# RAGNER Architecture
+# PrivGuard Architecture
 
 ## Component Diagram
 

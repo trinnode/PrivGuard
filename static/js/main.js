@@ -4,7 +4,7 @@
   /* ============================
      DARK MODE
      ============================ */
-  var SK = "mamoru_theme";
+  var SK = "privguard_theme";
 
   function getTheme() {
     return localStorage.getItem(SK) || "light";
@@ -229,8 +229,8 @@
       if (!area) return;
       if (this.files && this.files.length > 0) {
         var file = this.files[0];
-        if (file.size > 5 * 1024 * 1024) {
-          showToast("File too large. Maximum is 5MB.", "error");
+        if (file.size > 100 * 1024) {
+          showToast("File too large. Maximum is 100KB.", "error");
           this.value = "";
           area.classList.remove("has-file");
           return;
@@ -250,7 +250,7 @@
       } else {
         area.classList.remove("has-file");
         var label = area.querySelector(".upload-label");
-        if (label) label.textContent = "Drop a file here or click to browse. PNG, JPEG, or PDF. Max 5MB.";
+        if (label) label.textContent = "Drop a file here or click to browse. PNG, JPEG, or PDF. Max 100KB.";
       }
     });
   });

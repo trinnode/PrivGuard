@@ -4,20 +4,26 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from incidents.models import Incident
 from incidents.views import log_audit
-from reporting.pdf_generator import generate_incident_report, generate_text_summary, generate_bulk_report
+from reporting.pdf_generator import (
+    generate_incident_report,
+    generate_text_summary,
+    generate_bulk_report,
+    should_conceal,
+)
 
 
 @login_required
 def export_pdf(request, reference_code):
     """Exports a single incident report as a PDF file."""
     incident = get_object_or_404(
-        Incident.objects.prefetch_related("harms"),
+        Incident.objects.prefetch_related("harms").select_related("user"),
         reference_code=reference_code,
         user=request.user,
     )
 
+    conceal = should_conceal(incident)
     try:
-        pdf_buffer = generate_incident_report(incident)
+        pdf_buffer = generate_incident_report(incident, conceal=conceal)
         log_audit(request, "incident_export", f"Exported PDF for incident {reference_code}")
         response = HttpResponse(pdf_buffer.read(), content_type="application/pdf")
         response["Content-Disposition"] = (
@@ -26,7 +32,7 @@ def export_pdf(request, reference_code):
         return response
     except Exception:
         log_audit(request, "incident_export", f"PDF generation failed for {reference_code}, text fallback sent")
-        text_content = generate_text_summary(incident)
+        text_content = generate_text_summary(incident, conceal=conceal)
         response = HttpResponse(text_content, content_type="text/plain; charset=utf-8")
         response["Content-Disposition"] = (
             f'attachment; filename="incident_{incident.reference_code}.txt"'
@@ -59,7 +65,7 @@ def admin_export_bulk(request):
         log_audit(request, "incident_export", f"Bulk exported {count} incidents as PDF")
         response = HttpResponse(pdf_buffer.read(), content_type="application/pdf")
         response["Content-Disposition"] = (
-            f'attachment; filename="mamoru_all_incidents_{count}_reports.pdf"'
+            f'attachment; filename="privguard_all_incidents_{count}_reports.pdf"'
         )
         return response
     except Exception:

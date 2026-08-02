@@ -25,6 +25,13 @@ class Incident(models.Model):
         ("closed", "Closed"),
     ]
 
+    CONCEALMENT_STATUS_CHOICES = [
+        ("none", "No concealment"),
+        ("requested", "Concealment requested"),
+        ("granted", "Concealment granted"),
+        ("revoked", "Concealment revoked"),
+    ]
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -75,7 +82,7 @@ class Incident(models.Model):
     evidence_file = models.FileField(
         upload_to=evidence_upload_path,
         blank=True,
-        help_text="Attach evidence (screenshot, document). Max 5MB. Allowed: PNG, JPEG, PDF",
+        help_text="Attach evidence (screenshot, document). Max 100KB. Allowed: PNG, JPEG, PDF",
     )
     is_anonymous = models.BooleanField(
         default=False,
@@ -85,6 +92,12 @@ class Incident(models.Model):
         default=False,
         verbose_name="Request identity concealment on exported reports",
         help_text="When enabled, your identity will be hidden in any exported version of this report.",
+    )
+    concealment_status = models.CharField(
+        max_length=20,
+        choices=CONCEALMENT_STATUS_CHOICES,
+        default="none",
+        verbose_name="Identity concealment status",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -101,14 +114,62 @@ class Incident(models.Model):
     def save(self, *args, **kwargs):
         if not self.reference_code:
             self.reference_code = self._generate_reference()
+        # A user request transitions to a pending "requested" state until an
+        # admin grants or denies it. Admin decisions are sticky and persist.
+        if self.anonymize_requested:
+            if self.concealment_status not in ("granted", "revoked"):
+                self.concealment_status = "requested"
+        elif self.concealment_status == "requested":
+            self.concealment_status = "none"
         super().save(*args, **kwargs)
 
     def _generate_reference(self):
         import uuid
-        return f"MMR-{uuid.uuid4().hex[:8].upper()}"
+        return f"PRG-{uuid.uuid4().hex[:8].upper()}"
+
+    @property
+    def concealment_active(self):
+        """True when the reporter's identity must be concealed and redacted in exports."""
+        if self.concealment_status == "revoked":
+            return False
+        if self.concealment_status == "granted":
+            return True
+        if self.concealment_status == "requested":
+            return False
+        if self.user is not None and self.user.anonymize_requested:
+            return True
+        return False
+
+    def concealment_status_label(self):
+        """Short label for admin views, combining incident and user-level state."""
+        if self.concealment_status == "revoked":
+            return "revoked"
+        if self.concealment_status == "granted":
+            return "active"
+        if self.concealment_status == "requested":
+            return "requested"
+        if self.user is not None and self.user.anonymize_requested:
+            return "active"
+        return "none"
 
     def harms_summary(self):
         return ", ".join([h.get_harm_category_display() for h in self.harms.all()])
+
+    @property
+    def evidence_is_remote(self):
+        """True when evidence is stored on UploadThing (key only) vs local disk."""
+        name = self.evidence_file.name or "" if self.evidence_file else ""
+        return bool(name) and settings.UPLOADTHING_ENABLED and not name.startswith("evidence/")
+
+    @property
+    def evidence_url(self):
+        """Absolute URL for evidence, handling both UploadThing keys and local files."""
+        if not self.evidence_file:
+            return ""
+        if self.evidence_is_remote:
+            from incidents.uploadthing import build_url
+            return build_url(self.evidence_file.name)
+        return self.evidence_file.url
 
 
 class Harm(models.Model):

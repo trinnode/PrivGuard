@@ -1,4 +1,4 @@
-# RAGNER - Privacy Incident Reporting System
+# PrivGuard - Privacy Incident Reporting System
 
 A web-based privacy incident reporting system for Nigerian university students. Users can document digital privacy violations, classify associated psychological and tangible harms using an adapted academic taxonomy, access context-appropriate guidance, and export structured reports.
 
