@@ -81,7 +81,7 @@ ACTOR_CHOICES = [
 
 def get_harm_by_category(category):
     """Returns display info for a given harm category key."""
-    mapping = dict(HARM_CATEGORIES)
+    mapping = {k: (v, v, t) for k, v, t in HARM_CATEGORIES}
     return mapping.get(category, ("Unknown", "Unknown category", "other"))
 
 
