@@ -7,6 +7,9 @@
 <div class="page-header">
   <h1>Dashboard</h1>
   <p class="subtitle">Overview of your reported incidents and harm patterns.</p>
+  <div class="header-actions">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdwsLJZtJlsYygC5pgSo0K6rfl-RusRzmta7zjHLauHhhjZPA/viewform?pli=1" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Share Feedback</a>
+  </div>
 </div>
 
 {% if total_incidents == 0 %}
@@ -151,6 +154,7 @@
     <a href="{% url 'incidents:create' %}" class="btn btn-primary">Report New Incident</a>
     <a href="{% url 'resources:list' %}" class="btn btn-secondary">Browse Resources</a>
     <a href="{% url 'accounts:profile' %}" class="btn btn-ghost">Privacy Settings</a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdwsLJZtJlsYygC5pgSo0K6rfl-RusRzmta7zjHLauHhhjZPA/viewform?pli=1" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Share Feedback</a>
   </div>
 </div>
 
