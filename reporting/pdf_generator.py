@@ -192,7 +192,7 @@ def generate_incident_report(incident, conceal=None):
 
     if conceal:
         elements.append(Paragraph(
-            f'<font color="#C75B39">&#128274; Identity concealment enabled &mdash; '
+            f'<font color="#C75B39">&#128274; Identity concealment enabled, '
             f'reporter details have been redacted.</font>',
             value_style,
         ))
@@ -585,8 +585,8 @@ def generate_bulk_report(incidents):
 
         if conceal:
             elements.append(Paragraph(
-                f'<font color="#C75B39">&#128274; Identity concealment enabled '
-                f'&mdash; reporter details have been redacted for this report.</font>',
+                f'<font color="#C75B39">&#128274; Identity concealment enabled, '
+                f'reporter details have been redacted for this report.</font>',
                 small_style,
             ))
 

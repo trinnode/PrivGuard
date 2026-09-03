@@ -6,8 +6,8 @@ const config = {
   tagline: "Privacy Incident Reporting System for Nigerian University Students",
   favicon: "img/favicon.svg",
 
-  url: "https://privguard.readthedocs.io",
-  baseUrl: "/",
+  url: "https://trinnode.github.io",
+  baseUrl: "/PrivGuard/",
 
   organizationName: "trinnode",
   projectName: "PrivGuard",
