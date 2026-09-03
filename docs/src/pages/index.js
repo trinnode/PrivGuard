@@ -19,7 +19,7 @@ const features = [
   {
     title: "27 Support Resources",
     description:
-      "Curated library of real Nigerian organisations — NDPC, NPF-NCCC, MANI, Asido Foundation, and more — matched to incidents by type and harm.",
+      "Curated library of real Nigerian organisations, NDPC, NPF-NCCC, MANI, Asido Foundation, and more, matched to incidents by type and harm.",
   },
   {
     title: "PDF Export",
@@ -34,7 +34,7 @@ const features = [
   {
     title: "Admin Dashboard",
     description:
-      "7-filter search, concealment grant/deny workflow, harm distribution analytics, and severity breakdown — all in a responsive dark/light interface.",
+      "7-filter search, concealment grant/deny workflow, harm distribution analytics, and severity breakdown, all in a responsive dark/light interface.",
   },
 ];
 

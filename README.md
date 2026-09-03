@@ -42,35 +42,35 @@
 
 ### Core
 
-- **Incident Reporting** — Multi-step guided form with a 17-category taxonomy for classifying psychological and tangible harms
-- **Harm Classification** — 9 psychological, 7 tangible, and 1 "other" harm categories with severity ratings (1–4) and duration classification
-- **Evidence Upload** — File attachment support via UploadThing cloud storage or local filesystem fallback (max 100 KB)
-- **PDF Export** — Structured PDF reports with unique `PRG-XXXXXXXX` reference codes, per-incident identity redaction, and bulk export with table of contents
+- **Incident Reporting**, Multi-step guided form with a 17-category taxonomy for classifying psychological and tangible harms
+- **Harm Classification**, 9 psychological, 7 tangible, and 1 "other" harm categories with severity ratings (1 to 4) and duration classification
+- **Evidence Upload**, File attachment support via UploadThing cloud storage or local filesystem fallback (max 100 KB)
+- **PDF Export**, Structured PDF reports with unique `PRG-XXXXXXXX` reference codes, per-incident identity redaction, and bulk export with table of contents
 
 ### Privacy & Security
 
-- **Concealment Workflow** — Users can request identity concealment; admins review and grant or deny requests (granted = redacted in exports, denied = visible)
-- **Session Timeout** — Automatic logout after 15 minutes of inactivity
-- **CSRF Protection** — All forms protected with cross-site request forgery tokens
-- **Secure Cookies** — `httponly`, `samesite`, configurable `Secure` flag
-- **Argon2 Hashing** — Industry-standard password hashing with automatic algorithm upgrade
-- **Audit Logging** — SHA-256 IP hashing, event tracking for all system actions (login, report, export, concealment)
-- **Input Sanitization** — XSS prevention on all user-supplied content
+- **Concealment Workflow**, Users can request identity concealment; admins review and grant or deny requests (granted = redacted in exports, denied = visible)
+- **Session Timeout**, Automatic logout after 15 minutes of inactivity
+- **CSRF Protection**, All forms protected with cross-site request forgery tokens
+- **Secure Cookies**, `httponly`, `samesite`, configurable `Secure` flag
+- **Argon2 Hashing**, Industry-standard password hashing with automatic algorithm upgrade
+- **Audit Logging**, SHA-256 IP hashing, event tracking for all system actions (login, report, export, concealment)
+- **Input Sanitization**, XSS prevention on all user-supplied content
 
 ### User Experience
 
-- **Dark / Light Mode** — Full theme toggle with system-preference detection
-- **Mobile Responsive** — Optimized for smartphones and tablets
-- **Autosave** — Local storage draft preservation with explicit user consent
-- **Distress Keyword Detection** — Flags reports containing indicators of acute distress
-- **Low-Literacy Navigation** — Clear language, minimal jargon, contextual help text
+- **Dark / Light Mode**, Full theme toggle with system-preference detection
+- **Mobile Responsive**, Optimized for smartphones and tablets
+- **Autosave**, Local storage draft preservation with explicit user consent
+- **Distress Keyword Detection**, Flags reports containing indicators of acute distress
+- **Low-Literacy Navigation**, Clear language, minimal jargon, contextual help text
 
 ### Admin
 
-- **Admin Dashboard** — Overview of reported incidents, harm patterns, severity distribution
-- **7-Filter Search** — Filter by status, concealment state, classification, platform, severity, and date range
-- **Concealment Management** — Grant, deny, or revoke concealment requests directly from the list view or detail page
-- **Support Resource Library** — 27 curated Nigerian organizations with contact info, incident-type matching, and harm-based recommendations
+- **Admin Dashboard**, Overview of reported incidents, harm patterns, severity distribution
+- **7-Filter Search**, Filter by status, concealment state, classification, platform, severity, and date range
+- **Concealment Management**, Grant, deny, or revoke concealment requests directly from the list view or detail page
+- **Support Resource Library**, 27 curated Nigerian organizations with contact info, incident-type matching, and harm-based recommendations
 
 ---
 
@@ -245,7 +245,7 @@ pip install -r requirements.txt
 
 # Configure environment
 cp .env.example .env
-# Edit .env — use DATABASE_URL or DB_* variables pointing to your PostgreSQL instance
+# Edit .env, use DATABASE_URL or DB_* variables pointing to your PostgreSQL instance
 
 # Run migrations
 python manage.py migrate
@@ -295,14 +295,14 @@ All variables are set in the `.env` file at the project root.
 | `DB_PASSWORD` | PostgreSQL password | `ragnar_pass` | Local dev |
 | `DB_HOST` | PostgreSQL host | `localhost` | Local dev |
 | `DB_PORT` | PostgreSQL port | `5432` | Local dev |
-| `DATABASE_URL` | Full PostgreSQL connection string (overrides DB_*) | — | Vercel / Neon |
-| `UPLOADTHING_TOKEN` | UploadThing API token | — | Optional |
-| `UPLOADTHING_SECRET` | UploadThing secret key | — | Optional |
+| `DATABASE_URL` | Full PostgreSQL connection string (overrides DB_*) |, | Vercel / Neon |
+| `UPLOADTHING_TOKEN` | UploadThing API token |, | Optional |
+| `UPLOADTHING_SECRET` | UploadThing secret key |, | Optional |
 | `UPLOADTHING_CDN_URL` | UploadThing CDN base URL | `https://utfs.io/f` | Optional |
 | `EMAIL_HOST` | SMTP server host | `smtp.gmail.com` | Optional |
 | `EMAIL_PORT` | SMTP server port | `587` | Optional |
-| `EMAIL_HOST_USER` | SMTP username | — | Optional |
-| `EMAIL_HOST_PASSWORD` | SMTP password / app password | — | Optional |
+| `EMAIL_HOST_USER` | SMTP username |, | Optional |
+| `EMAIL_HOST_PASSWORD` | SMTP password / app password |, | Optional |
 | `EMAIL_USE_TLS` | Enable TLS for email | `True` | Optional |
 | `SESSION_COOKIE_SECURE` | Require HTTPS for session cookies | `False` | **Production** |
 | `CSRF_COOKIE_SECURE` | Require HTTPS for CSRF cookies | `False` | **Production** |
@@ -330,7 +330,7 @@ PrivGuard/
 │   ├── taxonomy.py              # 17-category harm taxonomy, platform/classification enums
 │   ├── urls.py                  # Incident URL routing
 │   ├── management/commands/
-│   │   ├── populate_users_data.py   # Synthetic student data generator (254 students)
+│   │   ├── populate_users_data.py   # Saved student data generator (254 students)
 │   │   └── seed_resources.py        # 27 Nigerian support resources seeder
 │   └── templatetags/
 │       └── incident_extras.py   # Custom template filters
@@ -479,7 +479,7 @@ User submits incident report
 ```
 
 **Key rules:**
-- Granting/denying is **sticky** — admin decisions persist across re-seeds
+- Granting/denying is **sticky**, admin decisions persist across re-seeds
 - Concealed incidents show `[REDACTED]` in all PDF exports and admin views
 - Users cannot see their own concealment status until it is granted
 - The pending-count badge on the admin list is clickable and filters to pending requests
@@ -578,7 +578,7 @@ SECURE_SSL_REDIRECT=True
 vercel env pull .env.local
 python manage.py migrate
 python manage.py seed_resources
-python manage.py populate_users_data --fresh  # optional: demo data
+python manage.py populate_users_data --fresh  # optional: saved data
 ```
 
 ### Docker (Production)
@@ -620,7 +620,7 @@ docker compose down
 
 ## License
 
-This project is developed for academic research purposes as part of a study on digital privacy violations among Nigerian university students. All synthetic data used in demonstrations is randomly generated and does not represent real individuals.
+This project is developed for academic research purposes as part of a study on digital privacy violations among Nigerian university students. All saved data used in demonstrations is randomly generated and does not represent real individuals.
 
 ---
 

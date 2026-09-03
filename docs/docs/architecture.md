@@ -43,7 +43,7 @@ PrivGuard is a server-rendered Django application with PostgreSQL as the databas
 - `Harm` model for multi-dimensional harm classification
 - `AuditLog` for security event tracking
 - Concealment lifecycle (request → grant/deny → revoke)
-- Management commands for synthetic data generation
+- Management commands for saved data generation
 
 ### `resources`
 - `Resource` model with incident-type and harm-category matching
@@ -188,13 +188,13 @@ sequenceDiagram
 | Language | Python | 3.10+ |
 | Framework | Django | 5.0 |
 | Database | PostgreSQL | 14+ |
-| ORM | Django ORM | — |
+| ORM | Django ORM |, |
 | PDF Engine | ReportLab | 5.0+ |
 | Password Hashing | Argon2 (`argon2-cffi`) | 25.1+ |
 | Static Files | WhiteNoise | 6.12+ |
-| File Upload | UploadThing (cloud) / local fallback | — |
+| File Upload | UploadThing (cloud) / local fallback |, |
 | DB URL Parser | dj-database-url | 3.1+ |
 | Environment | python-decouple | 3.8+ |
 | WSGI Server | Gunicorn | 26.2+ |
-| Container | Docker (multi-stage) | — |
-| Serverless | Vercel | — |
+| Container | Docker (multi-stage) |, |
+| Serverless | Vercel |, |

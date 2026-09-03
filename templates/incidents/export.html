@@ -37,7 +37,7 @@
     <p class="text-muted">Reference: {{ incident.reference_code }}</p>
     <p class="text-muted">Filed: {{ incident.created_at|date:"F j, Y" }}</p>
     {% if conceal %}
-    <p style="margin-top:var(--sp-2); color:var(--accent); font-weight:600;">&#128274; Identity concealment enabled — reporter details redacted</p>
+    <p style="margin-top:var(--sp-2); color:var(--accent); font-weight:600;">&#128274; Identity concealment enabled, reporter details redacted</p>
     {% endif %}
   </div>
 

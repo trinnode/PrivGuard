@@ -64,7 +64,7 @@
         <h3>Identity Concealment</h3>
         <p class="detail-value">
           {% if incident.concealment_status == "requested" %}
-          <span class="badge badge-warning">Pending — awaiting admin decision</span>
+          <span class="badge badge-warning">Pending, awaiting admin decision</span>
           {% elif incident.concealment_status == "granted" %}
           <span class="badge badge-severe">Active (identity redacted in exports)</span>
           {% elif incident.concealment_status == "revoked" %}

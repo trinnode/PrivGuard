@@ -29,11 +29,11 @@ git checkout -b feature/your-feature-name
 ```
 
 Branch naming conventions:
-- `feature/` — new features
-- `fix/` — bug fixes
-- `docs/` — documentation changes
-- `refactor/` — code refactoring
-- `test/` — adding or updating tests
+- `feature/`, new features
+- `fix/`, bug fixes
+- `docs/`, documentation changes
+- `refactor/`, code refactoring
+- `test/`, adding or updating tests
 
 ### 2. Make Changes
 
@@ -56,12 +56,12 @@ git commit -m "feat: add description of your change"
 ```
 
 Commit message conventions:
-- `feat:` — new feature
-- `fix:` — bug fix
-- `docs:` — documentation change
-- `refactor:` — code refactoring
-- `test:` — adding/updating tests
-- `chore:` — maintenance tasks
+- `feat:`, new feature
+- `fix:`, bug fix
+- `docs:`, documentation change
+- `refactor:`, code refactoring
+- `test:`, adding/updating tests
+- `chore:`, maintenance tasks
 
 ### 5. Push and Create PR
 
@@ -91,21 +91,21 @@ Then open a Pull Request on GitHub.
 
 ## Architecture Decisions
 
-- **Server-rendered** — Django templates, no SPA framework
-- **No REST API** — current implementation is template-based; API endpoints reserved at `/api/v1/`
-- **Single database** — PostgreSQL only; no SQLite in production
-- **File uploads** — UploadThing cloud with local fallback
-- **PDF generation** — ReportLab (not WeasyPrint or wkhtmltopdf)
+- **Server-rendered**, Django templates, no SPA framework
+- **No REST API**, current implementation is template-based; API endpoints reserved at `/api/v1/`
+- **Single database**, PostgreSQL only; no SQLite in production
+- **File uploads**, UploadThing cloud with local fallback
+- **PDF generation**, ReportLab (not WeasyPrint or wkhtmltopdf)
 
 ## Reporting Issues
 
 Open an issue on [GitHub Issues](https://github.com/trinnode/PrivGuard/issues) with:
 
-1. **Description** — what happened vs. what you expected
-2. **Steps to reproduce** — exact steps to trigger the issue
-3. **Environment** — OS, Python version, browser
-4. **Screenshots** — if applicable
-5. **Logs** — relevant error messages
+1. **Description**, what happened vs. what you expected
+2. **Steps to reproduce**, exact steps to trigger the issue
+3. **Environment**, OS, Python version, browser
+4. **Screenshots**, if applicable
+5. **Logs**, relevant error messages
 
 ## License
 

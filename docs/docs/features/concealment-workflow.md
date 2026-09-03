@@ -52,10 +52,10 @@ User submits incident report
 
 ### List View (`/incidents/admin/`)
 
-- **Pending badge** — shows count of pending requests; clickable to filter
-- **Approve button** — grants concealment directly from the list row
-- **Deny button** — denies concealment directly from the list row
-- **Filters** — filter by concealment status to see all pending/granted/denied
+- **Pending badge**, shows count of pending requests; clickable to filter
+- **Approve button**, grants concealment directly from the list row
+- **Deny button**, denies concealment directly from the list row
+- **Filters**, filter by concealment status to see all pending/granted/denied
 
 ### Detail View (`/incidents/admin/<id>/`)
 
@@ -66,7 +66,7 @@ User submits incident report
 
 ## Key Rules
 
-1. **Admin decisions are sticky** — once granted or denied, the decision persists. Re-seeding data does not reset concealment status.
+1. **Admin decisions are sticky**, once granted or denied, the decision persists. Re-seeding data does not reset concealment status.
 2. **Users cannot see their own concealment status** until it is granted (to prevent information leakage).
 3. **Redacted incidents** show `[REDACTED]` in place of the reporter's name in all PDF exports and admin views.
 4. **Revocation** changes the status back to "revoked" and makes the identity visible again in exports.

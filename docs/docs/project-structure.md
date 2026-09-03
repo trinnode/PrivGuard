@@ -29,7 +29,7 @@ PrivGuard/
 │   ├── views.py                 # CRUD, admin dashboard, PDF export
 │   ├── management/
 │   │   └── commands/
-│   │       ├── populate_users_data.py   # Synthetic student data generator
+│   │       ├── populate_users_data.py   # Saved student data generator
 │   │       └── seed_resources.py        # Resource seeder
 │   └── templatetags/
 │       └── incident_extras.py   # Custom template filters
@@ -131,9 +131,9 @@ PrivGuard/
 
 | File | Purpose |
 |------|---------|
-| `ragnar/settings.py` | All Django configuration — security, database, apps, middleware, static files |
+| `ragnar/settings.py` | All Django configuration, security, database, apps, middleware, static files |
 | `incidents/taxonomy.py` | Defines all enums: harm categories, platforms, classifications, severity levels |
-| `incidents/models.py` | Core data models — Incident, Harm, AuditLog, with concealment logic |
+| `incidents/models.py` | Core data models, Incident, Harm, AuditLog, with concealment logic |
 | `incidents/views.py` | All incident CRUD, admin dashboard, PDF export triggers |
 | `resources/models.py` | Resource model with `recommended_for()` classmethod |
 | `setup.sh` | Cross-platform environment setup with version-aware package installation |

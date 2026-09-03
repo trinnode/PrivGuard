@@ -4,7 +4,7 @@ Reference: `RAGNER FYB PROJECT COMPLETE.md`
 
 Below is every text change to make, ordered **from the abstract to the end**.
 Each item gives: **where to go** (page/section + exact old text), **what to replace with** (new text).
-Skip the embedded base-64 images — only prose is revised.
+Skip the embedded base-64 images, only prose is revised.
 
 ---
 
@@ -51,17 +51,17 @@ FWANSHACK, EMMANUEL
 
 ---
 
-## 4. CHAPTER ONE — 1.1 Background / 1.3 / 1.6 (Lines 273-279, 316-329, 319-335)
+## 4. CHAPTER ONE, 1.1 Background / 1.3 / 1.6 (Lines 273-279, 316-329, 319-335)
 
 **Where (Line 279, last paragraph of 1.1):**
 > …This project responds to these gaps by developing a web based Privacy Incident Reporting System integrated with an adapted sociotechnical taxonomy of lived privacy harms tailored for Nigerian university students.
 
 **Replace with:**
-> …This project — rebranded as **PrivGuard** — responds to these gaps by developing a web based Privacy Incident Reporting System integrated with an adapted sociotechnical taxonomy of lived privacy harms tailored for Nigerian university students. All system-generated reference codes now use the prefix `PRG-`.
+> …This project, rebranded as **PrivGuard**, responds to these gaps by developing a web based Privacy Incident Reporting System integrated with an adapted sociotechnical taxonomy of lived privacy harms tailored for Nigerian university students. All system-generated reference codes now use the prefix `PRG-`.
 
 ---
 
-## 5. CHAPTER THREE — 3.5.2 Database Design / Taxonomy (Lines 520-553)
+## 5. CHAPTER THREE, 3.5.2 Database Design / Taxonomy (Lines 520-553)
 
 **Where (Line 520):**
 > The Harm entity maintains a relationship with the Incident entity, allowing multiple harm classifications per reported incident.
@@ -99,7 +99,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 6. CHAPTER THREE — 3.5.3 User Interface / 3.6 Technology (Lines 555, 567)
+## 6. CHAPTER THREE, 3.5.3 User Interface / 3.6 Technology (Lines 555, 567)
 
 **Where (Line 567):**
 > The frontend uses HTML5, CSS3 with a custom design system…
@@ -109,7 +109,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 7. CHAPTER THREE — 3.7.1 Testing Environment Table 3.3 (Line 577)
+## 7. CHAPTER THREE, 3.7.1 Testing Environment Table 3.3 (Line 577)
 
 **Where (the Staging table):**
 | **Component** | **Specification** |
@@ -128,7 +128,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 8. CHAPTER THREE — 3.8 Security & 3.5.3 (Lines 508-510)
+## 8. CHAPTER THREE, 3.8 Security & 3.5.3 (Lines 508-510)
 
 **Where (Line 510):**
 > The `MAX_UPLOAD_SIZE` setting (5 MB) and `ALLOWED_UPLOAD_TYPES` whitelist are enforced…
@@ -138,7 +138,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 9. CHAPTER FOUR — 4.3.3 Dashboard (Line 673)
+## 9. CHAPTER FOUR, 4.3.3 Dashboard (Line 673)
 
 **Where:**
 > The dashboard presents statistic cards displaying total incidents, psychological harm counts, and tangible harm counts.
@@ -148,7 +148,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 10. CHAPTER FOUR — 4.3.4 Resource Library (Lines 680-681)
+## 10. CHAPTER FOUR, 4.3.4 Resource Library (Lines 680-681)
 
 **Where:**
 > The resource library displays curated guidance materials organised by category. The interface provides category filtering, full text search, and a responsive card grid layout. Each resource card displays the category badge, title, description, and action buttons for external links.
@@ -158,7 +158,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 11. CHAPTER FOUR — 4.3.2 Incident Reporting (Line 661) + 4.3.1 (Line 653)
+## 11. CHAPTER FOUR, 4.3.2 Incident Reporting (Line 661) + 4.3.1 (Line 653)
 
 **Where (Line 653):**
 > …The authentication system enforces strict password policies and implements session timeout mechanisms to protect user accounts.
@@ -174,7 +174,7 @@ Then update the in-text "15 categories, 2 domains" claims to read **"17 categori
 
 ---
 
-## 12. CHAPTER FOUR — 4.5.4 Comparisons / Tables 4.5 & 4.6 (Lines 809-827, 845)
+## 12. CHAPTER FOUR, 4.5.4 Comparisons / Tables 4.5 & 4.6 (Lines 809-827, 845)
 
 All rows that name the system as **Mamoru** must become **PrivGuard**. Specifically:
 
@@ -202,7 +202,7 @@ In the comparison tables, update the **Privacy incident focus** row, the **Digit
 
 ---
 
-## 13. CHAPTER FIVE — 5.1 / 5.2 (Lines 889-893)
+## 13. CHAPTER FIVE, 5.1 / 5.2 (Lines 889-893)
 
 **Where (Line 893):**
 > …The system implements anonymous submission, identity concealment, structured report export, and comprehensive audit logging.
@@ -212,7 +212,7 @@ In the comparison tables, update the **Privacy incident focus** row, the **Digit
 
 ---
 
-## 14. CHAPTER FIVE — 5.3 Recommendations (Line 903-907)
+## 14. CHAPTER FIVE, 5.3 Recommendations (Line 903-907)
 
 **Where (around Line 903, recommendation #5):**
 > **5\. Database Connection Pooling:** The current architecture experienced connection timeouts…

@@ -5,7 +5,7 @@ privacy incident reports, reported between 1 May and 10 July 2026.
 Run:  python manage.py populate_users_data
       python manage.py populate_users_data --fresh   (delete existing test data first)
 
-The synthetic data mirrors the survey proportions documented in Chapter 4:
+The saved data mirrors the survey proportions documented in Chapter 4:
 - Harm frequencies from Table 4.4 (anxiety 61.3 %, distress 54.6 %, …)
 - Platform categories from Table 4.2
 - Incident classifications from Table 4.3

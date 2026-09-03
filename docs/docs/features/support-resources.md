@@ -11,9 +11,9 @@ PrivGuard includes a library of **27 real Nigerian organisations** that provide 
 
 Resources are automatically recommended based on:
 
-1. **Incident Classification** — the type of privacy violation (e.g., sextortion → NAPTIP)
-2. **Harm Categories** — the harms reported (e.g., anxiety → Asido Foundation)
-3. **Platform** — the platform where the incident occurred
+1. **Incident Classification**, the type of privacy violation (e.g., sextortion → NAPTIP)
+2. **Harm Categories**, the harms reported (e.g., anxiety → Asido Foundation)
+3. **Platform**, the platform where the incident occurred
 
 The `Resource.recommended_for(incident, limit=4)` method returns the top 4 most relevant resources for any given incident.
 
@@ -51,7 +51,7 @@ The `Resource.recommended_for(incident, limit=4)` method returns the top 4 most 
 |-------------|---------|-------|
 | Asido Foundation | [asidofoundation.org](https://asidofoundation.org) | Mental health support |
 | She Writes Woman | [shewriteswoman.org](https://shewriteswoman.org) | Women's mental health |
-| Men Against Violence (MANI) | — | Gender-based violence |
+| Men Against Violence (MANI) |, | Gender-based violence |
 
 ### Digital Safety
 
@@ -64,9 +64,9 @@ The `Resource.recommended_for(incident, limit=4)` method returns the top 4 most 
 
 Administrators can manage resources through the admin panel:
 
-- **Add new resources** — with title, description, category, contact info, incident types, and harm categories
-- **Edit existing resources** — update contact information, descriptions, or relevance tags
-- **Deactivate resources** — hide resources that are no longer active
+- **Add new resources**, with title, description, category, contact info, incident types, and harm categories
+- **Edit existing resources**, update contact information, descriptions, or relevance tags
+- **Deactivate resources**, hide resources that are no longer active
 
 ## Resource Fields
 
@@ -89,5 +89,5 @@ Administrators can manage resources through the admin panel:
 # Seed all 27 resources
 python manage.py seed_resources
 
-# Resources are idempotent — running again updates existing entries
+# Resources are idempotent, running again updates existing entries
 ```

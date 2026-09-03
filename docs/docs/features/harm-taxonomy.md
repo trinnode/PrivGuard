@@ -105,10 +105,10 @@ The system recognises 14 incident types:
 
 ## How Harms Are Seeded
 
-When demo data is generated via `populate_users_data`, harms are automatically assigned to incidents based on:
+When saved data is generated via `populate_users_data`, harms are automatically assigned to incidents based on:
 
-1. **Platform** — certain platforms are associated with higher rates of specific harms
-2. **Classification** — different incident types produce different harm profiles
-3. **Severity** — higher-severity incidents produce more harm categories
+1. **Platform**, certain platforms are associated with higher rates of specific harms
+2. **Classification**, different incident types produce different harm profiles
+3. **Severity**, higher-severity incidents produce more harm categories
 
 The seeding distribution ensures a realistic spread across all 17 categories while maintaining consistency with the academic taxonomy.

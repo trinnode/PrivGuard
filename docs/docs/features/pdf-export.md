@@ -34,9 +34,9 @@ The reference code (`PRG-XXXXXXXX`) is always preserved, even in redacted export
 
 Admins can export multiple incidents as a single PDF with:
 
-- **Table of Contents** — numbered list of all included incidents
-- **Per-incident sections** — each incident as a separate section with full details
-- **Redaction applied consistently** — concealed incidents are redacted throughout the bulk export
+- **Table of Contents**, numbered list of all included incidents
+- **Per-incident sections**, each incident as a separate section with full details
+- **Redaction applied consistently**, concealed incidents are redacted throughout the bulk export
 
 ## Reference Codes
 

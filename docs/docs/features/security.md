@@ -92,18 +92,18 @@ Every significant action is logged in the `AuditLog` model:
 | `ACCOUNT_DELETED` | User account deleted |
 
 Each entry records:
-- **Timestamp** — when the event occurred
-- **User** — who performed the action
-- **Event type** — categorised from the list above
-- **Action summary** — human-readable description
-- **IP hash** — SHA-256 hash of the user's IP address (not the raw IP)
+- **Timestamp**, when the event occurred
+- **User**, who performed the action
+- **Event type**, categorised from the list above
+- **Action summary**, human-readable description
+- **IP hash**, SHA-256 hash of the user's IP address (not the raw IP)
 
 ## Data Isolation
 
 - Users can only see their own incidents (unless they are admin)
 - Admin views show all incidents but conceal identities when concealment is active
 - PDF exports respect concealment status at generation time
-- The `populate_users_data` command creates isolated, non-overlapping demo data
+- The `populate_users_data` command creates isolated, non-overlapping saved data
 
 ## Deployment Security
 

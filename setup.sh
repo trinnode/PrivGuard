@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # =============================================================================
-# PrivGuard One-Shot Setup Script (v3 — cross-platform, version-pinned)
+# PrivGuard One-Shot Setup Script (v3, cross-platform, version-pinned)
 #
 # What this script handles:
 #   * Linux families: Debian/Ubuntu/Kali (apt), Fedora/RHEL (dnf/yum),
-#     Arch (pacman), openSUSE (zypper) — correct, VERSION-PINNED packages
+#     Arch (pacman), openSUSE (zypper), correct, VERSION-PINNED packages
 #   * macOS via Homebrew
 #   * Windows ONLY through POSIX shell (Git Bash / MSYS2 / WSL)
 #   * Debian's python3.XX-venv / python3.XX-pip / python3.XX-dev naming
-#   * ensurepip stripped by distros — falls back to virtualenv wrapper
+#   * ensurepip stripped by distros, falls back to virtualenv wrapper
 #   * Python >= 3.10 required (Django 5+ baseline)
 #   * Binary wheel failures → installs C headers + compilers → retries source
 #
@@ -94,7 +94,7 @@ echo "  Auto-detected: ${BOLD}${AUTO_ENV}${RESET} (family: ${BOLD}${OS_FAMILY:-u
 echo ""
 echo "  Which environment is this?"
 echo "    1) Linux"
-echo "    2) Windows (Git Bash / MSYS2 / WSL only — .sh requires a POSIX shell)"
+echo "    2) Windows (Git Bash / MSYS2 / WSL only, .sh requires a POSIX shell)"
 echo "    3) macOS"
 read -r -p "  Enter choice [1/2/3] (Enter = auto-detect '$AUTO_ENV'): " ENV_CHOICE
 
@@ -103,7 +103,7 @@ case "$ENV_CHOICE" in
     2) ENV="windows" ;;
     3) ENV="macos" ;;
     "") ENV="$AUTO_ENV" ;;
-    *) warn "Unknown choice — using auto-detection."; ENV="$AUTO_ENV" ;;
+    *) warn "Unknown choice, using auto-detection."; ENV="$AUTO_ENV" ;;
 esac
 
 case "$ENV" in
@@ -119,7 +119,7 @@ if [[ "$(id -u)" -ne 0 ]] && command -v sudo >/dev/null 2>&1; then
 fi
 
 pkg_install() {
-    # Raw package-name installer — call AFTER map_pkg for versioned names.
+    # Raw package-name installer, call AFTER map_pkg for versioned names.
     local pkg="$1"
     [[ -z "$pkg" ]] && return 0
     case "$OS_FAMILY" in
@@ -299,7 +299,7 @@ create_venv() {
     info "Retrying with --without-pip flag..."
     rm -rf "$venv_dir" 2>/dev/null || true
     if "$venv_python" -m venv --without-pip "$venv_dir" 2>/dev/null; then
-        info "venv created without pip — bootstrapping pip via get-pip.py..."
+        info "venv created without pip, bootstrapping pip via get-pip.py..."
         # Determine venv python path
         local vp
         if [[ -x "$venv_dir/bin/python" ]]; then vp="$venv_dir/bin/python"; else vp="$venv_dir/Scripts/python"; fi
@@ -342,16 +342,16 @@ else
         || fail \
 "venv creation failed on all strategies. You must fix this manually:
 
-  ${BOLD}Step 1 — install the versioned venv package:${RESET}
+  ${BOLD}Step 1, install the versioned venv package:${RESET}
     Debian/Kali/Ubuntu:  sudo apt install ${DEB_VENV_PKG:-python3.XX-venv}
     Fedora/RHEL:         sudo dnf install python3
     Arch:                sudo pacman -S python
     openSUSE:            sudo zypper install python3
 
-  ${BOLD}Step 2 — recreate the venv:${RESET}
+  ${BOLD}Step 2, recreate the venv:${RESET}
     $PY_BIN -m venv $VENV_DIR
 
-  ${BOLD}Step 3 — re-run this script:${RESET}
+  ${BOLD}Step 3, re-run this script:${RESET}
     bash setup.sh
 "
 fi
@@ -383,7 +383,7 @@ ok "Virtualenv interpreter: $("$VENV_PY" --version) at $VENV_PY"
 
 # Ensure pip is available inside the venv (some --without-pip installs leave it out)
 if ! "$VENV_PY" -m pip --version >/dev/null 2>&1; then
-    warn "pip not available inside venv — bootstrapping..."
+    warn "pip not available inside venv, bootstrapping..."
     if [[ -f "$VENV_DIR/bin/activate" ]]; then
         # POSIX activate always sets up PATH correctly
         # shellcheck disable=SC1091
@@ -420,7 +420,7 @@ install_dep() {
     fi
 
     # Second attempt: install native build tools, then retry from source
-    warn "  Binary wheel unavailable for $dep — installing build tools..."
+    warn "  Binary wheel unavailable for $dep, installing build tools..."
 
     case "$OS_FAMILY" in
         debian)
@@ -487,7 +487,7 @@ ok "All dependencies installed:"
 step "5/8 Preparing environment variables"
 
 if [[ -f ".env" ]]; then
-    ok ".env already exists — leaving untouched"
+    ok ".env already exists, leaving untouched"
 else
     if [[ -f ".env.example" ]]; then
         cp .env.example .env
@@ -497,7 +497,7 @@ else
             "${EDITOR:-vi}" .env || true
         fi
     else
-        warn ".env.example not found — writing a minimal .env"
+        warn ".env.example not found, writing a minimal .env"
         SECRET="$("$VENV_PY" -c 'import secrets; print(secrets.token_urlsafe(48))' 2>/dev/null || head -c 48 /dev/urandom | base64)"
         cat > .env <<ENVEOF
 DJANGO_SECRET_KEY=$SECRET
@@ -536,13 +536,13 @@ ok "Configuration check passed"
 ok "Migrations applied"
 
 if confirm "Seed the Support Resources library (27 entries)?"; then
-    "$VENV_PY" manage.py seed_resources || warn "seed_resources failed — rerun later."
+    "$VENV_PY" manage.py seed_resources || warn "seed_resources failed, rerun later."
 fi
 
-if confirm "Populate demo data (254 students + incidents)? Skip on live databases!"; then
+if confirm "Populate saved data (254 students + incidents)? Skip on live databases!"; then
     if confirm "--fresh will DELETE existing incidents/students. Continue?"; then
         "$VENV_PY" manage.py populate_users_data --fresh \
-            || warn "populate_users_data failed — rerun once the DB is reachable."
+            || warn "populate_users_data failed, rerun once the DB is reachable."
     fi
 fi
 
@@ -561,7 +561,7 @@ if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
             info "Installing Docusaurus dependencies..."
             (cd docs && npm install --no-audit --no-fund 2>/dev/null) \
                 && ok "Docusaurus dependencies installed" \
-                || warn "npm install failed — docs site not set up"
+                || warn "npm install failed, docs site not set up"
         fi
         if [[ -d "docs/node_modules" ]]; then
             info "Building documentation site..."
@@ -571,7 +571,7 @@ if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
         fi
     fi
 else
-    warn "Node.js not found — skipping documentation setup"
+    warn "Node.js not found, skipping documentation setup"
     info "To set up docs later: install Node.js 18+, then run 'cd docs && npm install && npm run build'"
 fi
 
@@ -598,10 +598,10 @@ $( [[ "$ENV" == "windows" ]] \
       python manage.py runserver                    # start server
       python manage.py createsuperuser               # add admin
       python manage.py seed_resources                # re-seed resources
-      python manage.py populate_users_data --fresh   # rebuild demo data
+      python manage.py populate_users_data --fresh   # rebuild saved data
       python manage.py test tests                    # run tests
 
-  Seeded default admin (only if you populated demo data):
+  Seeded default admin (only if you populated saved data):
       admin@futminna.edu.ng / admin123
 
   Documentation site:

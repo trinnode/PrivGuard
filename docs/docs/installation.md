@@ -23,20 +23,20 @@ The `setup.sh` script handles everything automatically:
 ```bash
 git clone https://github.com/trinnode/PrivGuard.git
 cd PrivGuard
-bash setup.sh          # interactive — prompts at each decision
-bash setup.sh --yes    # non-interactive — accepts all defaults
+bash setup.sh          # interactive, prompts at each decision
+bash setup.sh --yes    # non-interactive, accepts all defaults
 ```
 
 ### What the script does
 
-1. **Detects your environment** — Linux (Debian/Fedora/Arch/openSUSE), macOS, or Windows
-2. **Installs system packages** — Python, pip, venv, PostgreSQL, git (version-pinned on Debian)
+1. **Detects your environment**, Linux (Debian/Fedora/Arch/openSUSE), macOS, or Windows
+2. **Installs system packages**, Python, pip, venv, PostgreSQL, git (version-pinned on Debian)
 3. **Creates an isolated virtual environment** at `.venv/`
-4. **Installs the latest Python dependencies** — falls back to source compilation if binary wheels are unavailable
-5. **Prepares `.env`** — copies from `.env.example` or generates a minimal config
-6. **Applies database migrations** — creates all tables
-7. **Seeds support resources** — 27 Nigerian organisations
-8. **Starts the development server** — `http://127.0.0.1:8000`
+4. **Installs the latest Python dependencies**, falls back to source compilation if binary wheels are unavailable
+5. **Prepares `.env`**, copies from `.env.example` or generates a minimal config
+6. **Applies database migrations**, creates all tables
+7. **Seeds support resources**, 27 Nigerian organisations
+8. **Starts the development server**, `http://127.0.0.1:8000`
 
 ### Edge cases handled
 
@@ -52,7 +52,7 @@ bash setup.sh --yes    # non-interactive — accepts all defaults
 
 ## Manual Installation
 
-### Linux — Debian / Ubuntu / Kali
+### Linux, Debian / Ubuntu / Kali
 
 ```bash
 # Install Python and version-pinned venv
@@ -80,7 +80,7 @@ pip install -r requirements.txt
 
 # Configure environment
 cp .env.example .env
-# Edit .env — set DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
+# Edit .env, set DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
 
 # Apply migrations
 python manage.py migrate
@@ -99,7 +99,7 @@ python manage.py runserver
 On Kali Linux, use `python3.11-venv` or `python3.12-venv` depending on your installed Python version. The generic `python3-venv` package may not exist.
 :::
 
-### Linux — Fedora / RHEL / CentOS
+### Linux, Fedora / RHEL / CentOS
 
 ```bash
 # Install Python
@@ -128,7 +128,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### Linux — Arch / Manjaro
+### Linux, Arch / Manjaro
 
 ```bash
 # Install Python and PostgreSQL
@@ -192,7 +192,7 @@ python --version
 git clone https://github.com/trinnode/PrivGuard.git
 cd PrivGuard
 
-# Create venv — Windows uses Scripts/ not bin/
+# Create venv, Windows uses Scripts/ not bin/
 python -m venv .venv
 source .venv/Scripts/activate
 
@@ -202,7 +202,7 @@ pip install -r requirements.txt
 
 # Configure
 cp .env.example .env
-# Edit .env — set DATABASE_URL or DB_* variables
+# Edit .env, set DATABASE_URL or DB_* variables
 
 # Apply migrations and seed
 python manage.py migrate
@@ -221,10 +221,10 @@ Windows users **must** use Git Bash, WSL, or MSYS2. The native Windows `cmd.exe`
 
 After starting the server, open `http://127.0.0.1:8000` in your browser. You should see:
 
-1. **Dashboard** — with statistics cards (all zero initially)
-2. **Login** — click "Login" and use your superuser credentials
-3. **Admin Panel** — at `/admin/` (if you are a superuser)
-4. **Resources** — at `/resources/` (if you ran `seed_resources`)
+1. **Dashboard**, with statistics cards (all zero initially)
+2. **Login**, click "Login" and use your superuser credentials
+3. **Admin Panel**, at `/admin/` (if you are a superuser)
+4. **Resources**, at `/resources/` (if you ran `seed_resources`)
 
 ### Default Admin Account
 

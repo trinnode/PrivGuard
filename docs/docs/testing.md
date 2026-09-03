@@ -94,10 +94,10 @@ Some tests fail in isolated test environments due to:
 
 | Issue | Cause | Production Impact |
 |-------|-------|-------------------|
-| SMTP tests | Test environment lacks mail server | None — email works in production |
-| PDF date parsing | Tests pass string dates instead of datetime objects | None — fixed in production code |
-| CSRF cookie tests | Test client behaves differently than browser | None — CSRF works correctly in browsers |
-| Session cookie tests | Test client has different cookie handling | None — cookies work correctly in production |
+| SMTP tests | Test environment lacks mail server | None, email works in production |
+| PDF date parsing | Tests pass string dates instead of datetime objects | None, fixed in production code |
+| CSRF cookie tests | Test client behaves differently than browser | None, CSRF works correctly in browsers |
+| Session cookie tests | Test client has different cookie handling | None, cookies work correctly in production |
 
 These are pre-existing test-environment artifacts, not production bugs.
 
@@ -134,9 +134,9 @@ class IncidentTest(TestCase):
 
 ### Best Practices
 
-1. **Use `setUp()`** for fixtures — don't create objects in every test
-2. **Test one thing per test** — keep tests focused and readable
-3. **Use `reverse()`** for URLs — don't hardcode paths
-4. **Test both success and failure** — verify error handling
-5. **Check redirects** — most POST views should redirect on success
-6. **Verify database state** — don't just check response codes
+1. **Use `setUp()`** for fixtures, don't create objects in every test
+2. **Test one thing per test**, keep tests focused and readable
+3. **Use `reverse()`** for URLs, don't hardcode paths
+4. **Test both success and failure**, verify error handling
+5. **Check redirects**, most POST views should redirect on success
+6. **Verify database state**, don't just check response codes

@@ -3,13 +3,13 @@ sidebar_position: 1
 title: Introduction
 ---
 
-# PrivGuard — Privacy Incident Reporting System
+# PrivGuard, Privacy Incident Reporting System
 
 PrivGuard is a web-based platform built for Nigerian university students to **document digital privacy violations**, classify associated psychological and tangible harms using an adapted academic taxonomy, access context-appropriate guidance, and export structured reports.
 
 ## Why PrivGuard?
 
-Digital privacy violations are a growing concern among university students in Nigeria. Students face harassment on social media, data breaches, doxxing, sextortion, and non-consensual sharing of intimate images — yet there are few accessible, structured avenues for documenting these incidents and understanding their impact.
+Digital privacy violations are a growing concern among university students in Nigeria. Students face harassment on social media, data breaches, doxxing, sextortion, and non-consensual sharing of intimate images, yet there are few accessible, structured avenues for documenting these incidents and understanding their impact.
 
 PrivGuard addresses this gap by providing:
 
@@ -17,7 +17,7 @@ PrivGuard addresses this gap by providing:
 - **A harm classification system** adapted from academic research, covering 17 categories across psychological, tangible, and "other" domains
 - **A support resource library** of 27 real Nigerian organisations that students can contact for help
 - **PDF export** with unique reference codes that can be shared with authorities, counsellors, or legal advisors
-- **Privacy by design** — students can request identity concealment, and all data is secured with industry-standard protections
+- **Privacy by design**, students can request identity concealment, and all data is secured with industry-standard protections
 
 ## Key Concepts
 
@@ -43,15 +43,15 @@ Browser ──► Django 5.0 ──► PostgreSQL
 
 ## Who Is This For?
 
-- **Students** — Document privacy violations and get connected to support
-- **Researchers** — Study patterns in digital privacy harms among university populations
-- **Administrators** — Review reports, manage concealment requests, and monitor trends
-- **Counsellors** — Use structured incident data to provide targeted support
+- **Students**, Document privacy violations and get connected to support
+- **Researchers**, Study patterns in digital privacy harms among university populations
+- **Administrators**, Review reports, manage concealment requests, and monitor trends
+- **Counsellors**, Use structured incident data to provide targeted support
 
 ## Quick Links
 
-- [Installation Guide](./installation) — Set up PrivGuard locally
-- [Configuration](./configuration) — Environment variables and database setup
-- [Architecture](./architecture) — Detailed system design and database schema
-- [Harm Taxonomy](./features/harm-taxonomy) — The 17-category classification system
-- [Deployment](./deployment/vercel) — Deploy to production
+- [Installation Guide](./installation), Set up PrivGuard locally
+- [Configuration](./configuration), Environment variables and database setup
+- [Architecture](./architecture), Detailed system design and database schema
+- [Harm Taxonomy](./features/harm-taxonomy), The 17-category classification system
+- [Deployment](./deployment/vercel), Deploy to production

@@ -42,8 +42,8 @@ When `DATABASE_URL` is set, it takes precedence over individual `DB_*` variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `UPLOADTHING_TOKEN` | UploadThing API token | — |
-| `UPLOADTHING_SECRET` | UploadThing secret key | — |
+| `UPLOADTHING_TOKEN` | UploadThing API token |, |
+| `UPLOADTHING_SECRET` | UploadThing secret key |, |
 | `UPLOADTHING_CDN_URL` | UploadThing CDN base URL | `https://utfs.io/f` |
 
 If no UploadThing token is configured, files are stored locally in `media/evidence/`.
@@ -54,8 +54,8 @@ If no UploadThing token is configured, files are stored locally in `media/eviden
 |----------|-------------|---------|
 | `EMAIL_HOST` | SMTP server hostname | `smtp.gmail.com` |
 | `EMAIL_PORT` | SMTP server port | `587` |
-| `EMAIL_HOST_USER` | SMTP username | — |
-| `EMAIL_HOST_PASSWORD` | SMTP password / app password | — |
+| `EMAIL_HOST_USER` | SMTP username |, |
+| `EMAIL_HOST_PASSWORD` | SMTP password / app password |, |
 | `EMAIL_USE_TLS` | Enable TLS encryption | `True` |
 
 ### Security (Production)
@@ -117,7 +117,7 @@ python manage.py migrate
 # Seed 27 support resources
 python manage.py seed_resources
 
-# Seed demo data (254 students + incidents) — skip on live databases
+# Seed saved data (254 students + incidents), skip on live databases
 python manage.py populate_users_data --fresh
 ```
 

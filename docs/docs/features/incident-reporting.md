@@ -31,10 +31,10 @@ PrivGuard provides a multi-step guided form for documenting digital privacy viol
 
 Users select one or more harm categories and rate each:
 
-- **Harm Category** — one of 17 categories (9 psychological, 7 tangible, 1 other)
-- **Severity Score** — 1 to 4 for each selected harm
-- **Duration** — one-time, recurring, ongoing, or unknown
-- **Elaboration** — optional free-text explanation
+- **Harm Category**, one of 17 categories (9 psychological, 7 tangible, 1 other)
+- **Severity Score**, 1 to 4 for each selected harm
+- **Duration**, one-time, recurring, ongoing, or unknown
+- **Elaboration**, optional free-text explanation
 
 ### Step 4: Evidence & Privacy
 
@@ -87,11 +87,11 @@ Users can see their own incidents at `/incidents/`. Each incident shows:
 ### Admin View
 
 Admins see all incidents at `/incidents/admin/` with:
-- **7-filter search** — status, concealment, classification, platform, severity, date range
-- **Newest-first ordering** — most recent incidents appear first
-- **Approve/Deny buttons** — directly in the list rows for concealment requests
-- **Clickable pending badge** — filters to pending concealment requests
-- **Recommended Support** — context-appropriate resources on the detail page
+- **7-filter search**, status, concealment, classification, platform, severity, date range
+- **Newest-first ordering**, most recent incidents appear first
+- **Approve/Deny buttons**, directly in the list rows for concealment requests
+- **Clickable pending badge**, filters to pending concealment requests
+- **Recommended Support**, context-appropriate resources on the detail page
 
 ## Autosave
 
