@@ -31,3 +31,8 @@ docker-compose.override.yml
 
 # Project
 media/evidence/.gitkeep
+
+# Docusaurus
+docs/node_modules/
+docs/build/
+docs/.docusaurus/
